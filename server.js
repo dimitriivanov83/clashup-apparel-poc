@@ -45,13 +45,11 @@ let punchlineCatalog = [
   { id: 'p8', text: "LA HYPE EST MORTE. MOI NON.", by: null, v: 0, cc: 1, active: true },
 ];
 
-// ── Pre-seed 5 demo users ──
+// ── Pre-seed 3 demo users ──
 const DEMO_USERS = [
-  { username: 'max_la_menace', email: 'max@clashup.fr', pass: 'clash1', owner: '@MAX_LA_MENACE' },
-  { username: 'sarah_clash', email: 'sarah@clashup.fr', pass: 'clash2', owner: '@SARAH_CLASH' },
-  { username: 'leo_punch', email: 'leo@clashup.fr', pass: 'clash3', owner: '@LEO_PUNCH' },
-  { username: 'nina_fire', email: 'nina@clashup.fr', pass: 'clash4', owner: '@NINA_FIRE' },
-  { username: 'alex_boom', email: 'alex@clashup.fr', pass: 'clash5', owner: '@ALEX_BOOM' },
+  { username: 'ju', email: 'ju@clashup.fr', pass: 'ju', owner: '@JU' },
+  { username: 'dim', email: 'dim@clashup.fr', pass: 'dim', owner: '@DIM' },
+  { username: 'max', email: 'max@clashup.fr', pass: 'max', owner: '@MAX' },
 ];
 
 // ── Helpers ──
