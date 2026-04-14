@@ -271,7 +271,7 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     patch.clashes.unshift({ text: (body.text||'').toUpperCase(), author: body.author||'Anon', at: new Date().toISOString() });
     patch.clashes = patch.clashes.slice(0, 50);
-    return sendJSON(res, { success: true, totalClashes: patch.clashes.length });
+    return sendJSON(res, { success: true, totalClashes: patch.clashes.length, clashes: patch.clashes });
   }
 
   // POST /api/patch/:id/validate (public)
