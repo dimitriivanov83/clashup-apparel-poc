@@ -286,6 +286,12 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
       </div>
     </div>
 
+    <!-- History section (scrollable below t-shirt) -->
+    <div id="history-section" style="display:none;padding:8px 16px 0;">
+      <p style="font-family:'Courier New',monospace;font-size:10px;font-weight:700;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">HISTORIQUE PUNCHLINES</p>
+      <div id="history-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+    </div>
+
     <!-- Bottom actions -->
     <div style="padding:10px 16px 16px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;background:var(--bg);">
       <button class="btn btn-1" id="btn-activate" onclick="openSheet()">ACTIVER MON PATCH</button>
@@ -344,7 +350,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
     <div class="px" style="padding-bottom:16px;"><h2 class="sheet-title">ÉCRIS TA PUNCHLINE OU<br>CHOISIS-EN UNE</h2></div>
     <div class="px" style="padding-bottom:12px;"><p style="font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-1);">CRÉER TA PUNCHLINE CUSTOM</p></div>
     <div class="px" style="display:flex;gap:8px;padding-bottom:16px;">
-      <input class="input input-mono" type="text" id="inp-custom" placeholder="[ TAPE TON TEXTE ICI.. ]" maxlength="60" oninput="onCustom(this)" style="flex:1;">
+      <input class="input input-mono" type="text" id="inp-custom" placeholder="TAPE TON TEXTE ICI" maxlength="60" style="flex:1;text-transform:uppercase;">
       <div style="display:flex;align-items:center;padding:0 12px;border-radius:8px;background:var(--orange);flex-shrink:0;"><span style="font-size:12px;font-weight:800;color:var(--black);">15 CC</span></div>
     </div>
     <div class="px" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;">
@@ -361,7 +367,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 <canvas id="share-canvas" width="600" height="600"></canvas>
 
 <script>
-let token=null,currentUser=null,patch=null,selIdx=null,customTxt='',localVals=0,clashOpen=false,clashDone=false,punchCatalog=[];
+let token=null,currentUser=null,patch=null,selIdx=null,customTxt='',localVals=0,clashOpen=false,clashDone=false,punchCatalog=[],hasVotedValidation=false;
 
 function authHeaders(){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;return h}
 
@@ -420,6 +426,21 @@ function renderPatch(){
   // Activate button state
   const ba=document.getElementById('btn-activate');
   ba.textContent=patch.punchline?'CHANGER MA PUNCHLINE':'ACTIVER MON PATCH';
+
+  // Punchline history
+  const hs=document.getElementById('history-section');
+  const hl=document.getElementById('history-list');
+  if(patch.punchlineHistory&&patch.punchlineHistory.length>0){
+    hs.style.display='block';
+    hl.innerHTML=patch.punchlineHistory.slice(0,8).map(h=>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;">
+        <span style="font-family:'Courier New',monospace;font-size:10px;font-weight:700;color:var(--text-2);text-transform:uppercase;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.text}</span>
+        <span style="font-size:9px;color:var(--text-3);margin-left:8px;flex-shrink:0;">${timeAgo(h.at)}</span>
+      </div>`
+    ).join('');
+  } else {
+    hs.style.display='none';
+  }
 }
 
 // ═══ SHARE — Generates the patch DA image with QR ═══
@@ -492,7 +513,12 @@ function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x
 
 // ═══ SHEET ═══
 async function openSheet(){
-  selIdx=null;customTxt='';document.getElementById('inp-custom').value='';
+  selIdx=null;customTxt='';
+  const inp=document.getElementById('inp-custom');
+  inp.value='';
+  // Attach listener (remove first to avoid duplicates)
+  inp.removeEventListener('input',onCustomInput);
+  inp.addEventListener('input',onCustomInput);
   // Always re-fetch catalog from server (admin may have added/edited punchlines)
   punchCatalog=await api.catalog();
   renderList();updateCharge();
@@ -506,12 +532,26 @@ function renderList(){
   const list=punchCatalog.length>0?punchCatalog:[];
   document.getElementById('pl-list').innerHTML=list.map((p,i)=>{
     const sel=selIdx===i?' sel':'',act=patch?.punchline===p.text;
-    return `<button class="pl-item${sel}" onclick="pickPunch(${i})"><div style="flex:1;min-width:0;"><p class="pl-text">${p.text}</p><div style="display:flex;gap:6px;align-items:center;margin-top:3px;">${p.by?`<span class="pl-sub">${p.by}</span>`:''}${p.v>0?`<span style="font-size:10px;color:var(--text-3);">+${p.v}</span>`:''}${act?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--success-dim);color:var(--success);font-weight:700;">active</span>`:''}</div></div><span class="pl-badge ${p.cc===0?'free':'paid'}">${p.cc===0?'INCLUS':p.cc+' CC'}</span></button>`;
+    return `<div class="pl-item${sel}" style="cursor:pointer;" onclick="pickPunch(${i})"><div style="flex:1;min-width:0;"><p class="pl-text">${p.text}</p><div style="display:flex;gap:6px;align-items:center;margin-top:3px;">${p.by?`<span class="pl-sub">${p.by}</span>`:''}${act?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--success-dim);color:var(--success);font-weight:700;">active</span>`:''}</div></div><div style="display:flex;align-items:center;gap:8px;"><button onclick="event.stopPropagation();votePunch('${p.id}',${i})" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Courier New',monospace;font-size:10px;font-weight:700;color:var(--orange);"><span style="font-size:12px;">&#9829;</span> ${p.v||0}</button><span class="pl-badge ${p.cc===0?'free':'paid'}">${p.cc===0?'INCLUS':p.cc+' CC'}</span></div></div>`;
   }).join('');
 }
 
+async function votePunch(catalogId,idx){
+  const res=await fetch(`/api/punchlines/${catalogId}/vote`,{method:'POST',headers:{'Content-Type':'application/json'}}).then(r=>r.json());
+  if(res.success){
+    punchCatalog[idx].v=res.votes;renderList();toast('Vote enregistré !');
+  } else if(res.alreadyVoted){
+    toast('Tu as déjà voté pour celle-ci');
+  }
+}
+
 function pickPunch(i){selIdx=i;customTxt='';document.getElementById('inp-custom').value='';renderList();updateCharge()}
-function onCustom(el){customTxt=el.value.toUpperCase();el.value=customTxt;if(customTxt.trim())selIdx=null;renderList();updateCharge()}
+function onCustomInput(){
+  const el=document.getElementById('inp-custom');
+  customTxt=el.value;
+  if(customTxt.trim())selIdx=null;
+  renderList();updateCharge();
+}
 function updateCharge(){document.getElementById('btn-charge').disabled=!(customTxt.trim()||selIdx!==null)}
 function setF(f,el){document.querySelectorAll('.chip-f').forEach(c=>c.classList.remove('active'));el.classList.add('active')}
 

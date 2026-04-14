@@ -29,7 +29,8 @@
     .header h1 span { color:var(--orange); }
 
     /* Stats */
-    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+    .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:32px; }
+    @media(max-width:700px) { .stats { grid-template-columns:repeat(3,1fr); } }
     .stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center; }
     .stat-n { font-size:28px; font-weight:900; color:var(--orange); }
     .stat-l { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; margin-top:4px; }
@@ -129,8 +130,30 @@
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Texte</th><th>Auteur</th><th>CC</th><th>Statut</th><th></th></tr></thead>
+        <thead><tr><th>Texte</th><th>Auteur</th><th>Votes</th><th>CC</th><th>Statut</th><th></th></tr></thead>
         <tbody id="punch-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Clashes -->
+  <div class="section">
+    <div class="section-title"><span>Derniers Clashs</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Clash</th><th>Auteur</th><th>Contre</th><th>Punchline visée</th><th>Date</th></tr></thead>
+        <tbody id="clashes-body"><tr><td colspan="5" style="color:var(--text-3);text-align:center;padding:20px;">Aucun clash</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Activations -->
+  <div class="section">
+    <div class="section-title"><span>Dernières Activations</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Punchline</th><th>Propriétaire</th><th>Date</th></tr></thead>
+        <tbody id="activations-body"><tr><td colspan="3" style="color:var(--text-3);text-align:center;padding:20px;">Aucune activation</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -189,6 +212,17 @@ let adminToken = null;
 
 function headers() { return { 'Content-Type':'application/json', 'Authorization':`Admin ${adminToken}` }; }
 
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  const now = new Date();
+  const diff = Math.floor((now - dt) / 1000);
+  if (diff < 60) return 'à l\'instant';
+  if (diff < 3600) return Math.floor(diff/60) + ' min';
+  if (diff < 86400) return Math.floor(diff/3600) + ' h';
+  return dt.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
 async function doLogin() {
   const pass = document.getElementById('admin-pass').value;
   const res = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) }).then(r=>r.json());
@@ -205,7 +239,9 @@ async function loadDash() {
   document.getElementById('stats').innerHTML = `
     <div class="stat"><div class="stat-n">${d.stats.totalUsers}</div><div class="stat-l">Utilisateurs</div></div>
     <div class="stat"><div class="stat-n">${d.stats.activePatches}</div><div class="stat-l">Patchs actifs</div></div>
-    <div class="stat"><div class="stat-n">${d.stats.totalScans}</div><div class="stat-l">Scans total</div></div>`;
+    <div class="stat"><div class="stat-n">${d.stats.totalScans}</div><div class="stat-l">Scans total</div></div>
+    <div class="stat"><div class="stat-n">${d.stats.totalClashes}</div><div class="stat-l">Clashs total</div></div>
+    <div class="stat"><div class="stat-n">${d.stats.totalValidations}</div><div class="stat-l">Validations</div></div>`;
 
   // Users
   document.getElementById('users-body').innerHTML = d.users.map(u => `<tr>
@@ -217,10 +253,11 @@ async function loadDash() {
     <td><button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">×</button></td>
   </tr>`).join('');
 
-  // Punchlines
+  // Punchlines (with votes)
   document.getElementById('punch-body').innerHTML = d.punchlines.map(p => `<tr>
     <td style="font-size:12px;font-weight:600;max-width:250px;">${p.text}</td>
     <td><span style="font-size:11px;color:var(--orange);">${p.by||'—'}</span></td>
+    <td><span style="color:var(--orange);font-weight:700;">♥ ${p.v||0}</span></td>
     <td>${p.cc} CC</td>
     <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'actif':'inactif'}</span></td>
     <td style="white-space:nowrap;">
@@ -228,6 +265,28 @@ async function loadDash() {
       <button class="btn btn-danger btn-sm" onclick="delPunch('${p.id}')">×</button>
     </td>
   </tr>`).join('');
+
+  // Recent Clashes
+  const cb = document.getElementById('clashes-body');
+  if (d.recentClashes && d.recentClashes.length > 0) {
+    cb.innerHTML = d.recentClashes.map(c => `<tr>
+      <td style="font-size:12px;font-weight:600;">"${c.text}"</td>
+      <td><span style="color:var(--orange);font-size:11px;">${c.author}</span></td>
+      <td>${c.owner}</td>
+      <td style="font-size:11px;color:var(--text-2);">${c.punchline||'—'}</td>
+      <td style="font-size:11px;color:var(--text-3);">${fmtDate(c.at)}</td>
+    </tr>`).join('');
+  }
+
+  // Recent Activations
+  const ab = document.getElementById('activations-body');
+  if (d.recentActivations && d.recentActivations.length > 0) {
+    ab.innerHTML = d.recentActivations.map(a => `<tr>
+      <td style="font-size:12px;font-weight:600;">"${a.punchline}"</td>
+      <td><span style="color:var(--orange);font-size:11px;">${a.owner}</span></td>
+      <td style="font-size:11px;color:var(--text-3);">${fmtDate(a.at)}</td>
+    </tr>`).join('');
+  }
 }
 
 function openAdd() { document.getElementById('modal-add').classList.add('open'); document.getElementById('add-text').focus(); }
@@ -274,6 +333,9 @@ async function delUser(id) {
 
 // Enter key on login
 document.getElementById('admin-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// Auto-refresh dashboard every 15s
+setInterval(() => { if (adminToken) loadDash(); }, 15000);
 </script>
 </body>
 </html>

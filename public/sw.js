@@ -1,5 +1,5 @@
-// ClashUp Apparel — Service Worker V3 (network-first for everything)
-const CACHE_NAME = 'clashup-apparel-v3';
+// ClashUp Apparel — Service Worker V4 (network-first + PostgreSQL)
+const CACHE_NAME = 'clashup-apparel-v4';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
