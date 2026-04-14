@@ -10,81 +10,47 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon-192.svg">
   <title>ClashUp — Connected Apparel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-/* ═══════════════════════════════════════════════════════════
-   CLASHUP CONNECTED APPAREL — V3 Premium
-   ═══════════════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#e75314;--black:#000;--white:#fff;
+  --bg:#050505;--surface:#0d0d0d;--surface-2:#151515;--surface-3:#1c1c1c;
+  --border:rgba(255,255,255,0.06);--border-orange:rgba(231,83,20,0.25);
+  --text-1:#f5f5f5;--text-2:rgba(255,255,255,0.50);--text-3:rgba(255,255,255,0.25);
+  --success:#34d399;--success-dim:rgba(52,211,153,0.12);--danger:#ef4444;
+  --glow-sm:0 0 20px rgba(231,83,20,0.15);
+  --text-glow:0 0 20px rgba(231,83,20,0.5),0 0 40px rgba(231,83,20,0.2);
+  --s-4:4px;--s-8:8px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;--r-full:999px;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+  --ease:cubic-bezier(0.4,0,0.2,1);--ease-out:cubic-bezier(0,0,0.2,1);--ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);font-family:'Inter','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;font-size:16px;line-height:1.5}
 
-:root {
-  --orange: #e75314; --orange-90: #ee5f25; --orange-70: #f57f3d;
-  --black: #000000; --white: #ffffff;
-  --bg: #050505; --surface: #0d0d0d; --surface-2: #151515; --surface-3: #1c1c1c;
-  --border: rgba(255,255,255,0.06); --border-orange: rgba(231,83,20,0.25);
-  --text-1: #f5f5f5; --text-2: rgba(255,255,255,0.50); --text-3: rgba(255,255,255,0.25);
-  --success: #34d399; --success-dim: rgba(52,211,153,0.12); --danger: #ef4444;
-  --glow-sm: 0 0 20px rgba(231,83,20,0.15);
-  --glow-md: 0 0 40px rgba(231,83,20,0.2), 0 0 80px rgba(231,83,20,0.08);
-  --text-glow: 0 0 20px rgba(231,83,20,0.5), 0 0 40px rgba(231,83,20,0.2);
-  --s-4: 4px; --s-8: 8px; --s-12: 12px; --s-16: 16px; --s-20: 20px; --s-24: 24px; --s-32: 32px; --s-40: 40px;
-  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px; --r-2xl: 24px; --r-full: 999px;
-  --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px);
-  --ease: cubic-bezier(0.4,0,0.2,1); --ease-out: cubic-bezier(0,0,0.2,1); --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes neonPulse{0%,100%{text-shadow:0 0 10px rgba(231,83,20,0.4),0 0 30px rgba(231,83,20,0.15)}50%{text-shadow:0 0 20px rgba(231,83,20,0.6),0 0 50px rgba(231,83,20,0.25)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(255,255,255,0.7);box-shadow:0 0 15px rgba(255,255,255,0.1),0 0 40px rgba(231,83,20,0.08)}50%{border-color:rgba(255,255,255,0.95);box-shadow:0 0 25px rgba(255,255,255,0.15),0 0 60px rgba(231,83,20,0.15)}}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:0.35}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}60%{transform:translateX(3px)}}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 20px rgba(231,83,20,0.3))}50%{filter:drop-shadow(0 0 40px rgba(231,83,20,0.5)) drop-shadow(0 0 80px rgba(231,83,20,0.2))}}
+@keyframes confirmPulse{0%{transform:scale(0.7);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes stitchDash{0%{stroke-dashoffset:0}100%{stroke-dashoffset:20}}
 
-html, body {
-  height:100%; width:100%; background:var(--black); color:var(--text-1);
-  font-family:'Inter','Helvetica Neue',Helvetica,-apple-system,sans-serif;
-  -webkit-font-smoothing:antialiased; overflow:hidden; font-size:16px; line-height:1.5;
-}
-
-/* ═══ ANIMATIONS ═══ */
-@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes neonPulse {
-  0%,100%{text-shadow:0 0 10px rgba(231,83,20,0.4),0 0 30px rgba(231,83,20,0.15)}
-  50%{text-shadow:0 0 20px rgba(231,83,20,0.6),0 0 50px rgba(231,83,20,0.25)}
-}
-@keyframes borderGlow {
-  0%,100%{border-color:rgba(255,255,255,0.7);box-shadow:0 0 15px rgba(255,255,255,0.1),0 0 40px rgba(231,83,20,0.08)}
-  50%{border-color:rgba(255,255,255,0.95);box-shadow:0 0 25px rgba(255,255,255,0.15),0 0 60px rgba(231,83,20,0.15)}
-}
-@keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-@keyframes scaleIn { from{opacity:0;transform:scale(0.88)} to{opacity:1;transform:scale(1)} }
-@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 60%{transform:translateX(3px)} }
-@keyframes logoGlow {
-  0%,100%{filter:drop-shadow(0 0 20px rgba(231,83,20,0.3))}
-  50%{filter:drop-shadow(0 0 40px rgba(231,83,20,0.5)) drop-shadow(0 0 80px rgba(231,83,20,0.2))}
-}
-@keyframes confirmPulse { 0%{transform:scale(0.7);opacity:0} 60%{transform:scale(1.05);opacity:1} 100%{transform:scale(1);opacity:1} }
-
-/* ═══ LAYOUT ═══ */
-.app {
-  height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
-  padding-top:var(--sat);padding-bottom:var(--sab);max-width:430px;margin:0 auto;
-  position:relative;background:var(--bg);
-}
-.app::before {
-  content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
-  width:300px;height:200px;background:radial-gradient(ellipse,rgba(231,83,20,0.06) 0%,transparent 70%);
-  pointer-events:none;z-index:0;
-}
-@media(min-width:431px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border);}}
+.app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--sat);padding-bottom:var(--sab);max-width:430px;margin:0 auto;position:relative;background:var(--bg)}
+@media(min-width:431px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border)}}
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden;position:relative;z-index:1}
 .screen.active{display:flex}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:0}
 
-/* ═══ TOPBAR ═══ */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--s-16) var(--s-20) var(--s-12);flex-shrink:0;position:relative;z-index:2}
 .topbar::after{content:'';position:absolute;bottom:0;left:var(--s-20);right:var(--s-20);height:1px;background:linear-gradient(90deg,transparent,var(--border-orange),transparent)}
 .logo-text{font-size:20px;font-weight:900;letter-spacing:-0.03em;text-transform:lowercase}
 .logo-text span{color:var(--orange)}
 .cert-id{font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase}
 
-/* ═══ BUTTONS ═══ */
 .btn{width:100%;padding:18px 24px;border-radius:var(--r-md);font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;text-align:center;cursor:pointer;border:none;transition:all 200ms var(--ease);font-family:inherit;-webkit-tap-highlight-color:transparent}
 .btn:active{transform:scale(0.97)}
 .btn-1{background:var(--orange);color:var(--black);box-shadow:var(--glow-sm)}
@@ -92,13 +58,11 @@ html, body {
 .btn-2{background:transparent;color:var(--orange);border:2px solid var(--orange)}
 .btn-3{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
 
-/* ═══ INPUTS ═══ */
 .input{width:100%;padding:var(--s-12) var(--s-16);border-radius:var(--r-sm);font-size:14px;font-weight:500;font-family:inherit;background:var(--surface);border:1.5px solid var(--border);color:var(--text-1);outline:none;transition:all 200ms var(--ease)}
 .input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(231,83,20,0.1)}
 .input::placeholder{color:var(--text-3)}
 .input-mono{font-family:'Courier New',monospace;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
 
-/* ═══ AUTH ═══ */
 .auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:var(--s-40) var(--s-32);text-align:center;position:relative;z-index:1}
 .auth-logo{margin-bottom:var(--s-8);animation:logoGlow 3s ease-in-out infinite}
 .auth-title{font-size:28px;font-weight:900;letter-spacing:-0.03em;margin-bottom:var(--s-4)}
@@ -112,36 +76,48 @@ html, body {
 .auth-user-name{font-size:13px;font-weight:700;color:var(--text-2)}
 .auth-logout{background:none;border:none;color:var(--text-3);font-size:11px;cursor:pointer;font-family:inherit;padding:var(--s-4)}
 
-/* ═══ TSHIRT VISUAL (Écran principal) ═══ */
-.tshirt-zone{position:relative;width:100%;aspect-ratio:3/4;background:var(--black);overflow:hidden;border-radius:var(--r-sm);margin-bottom:var(--s-16)}
-.tshirt-img{width:100%;height:100%;object-fit:cover;opacity:0.85}
-.tshirt-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--s-16)}
-.tshirt-data{font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.06em;line-height:1.8}
-.tshirt-data-right{position:absolute;top:42%;right:var(--s-16);text-align:right;font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.06em;line-height:1.8}
-.tshirt-row{display:flex;justify-content:space-between;padding:0 var(--s-4)}
-.tshirt-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(231,83,20,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(231,83,20,0.03) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
-.tshirt-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.6) 100%);pointer-events:none}
+/* ═══ TSHIRT CARD — Mockup style from prez ═══ */
+.tshirt-card{position:relative;margin:0 -20px;background:#0a0a0a;overflow:hidden}
+.tshirt-inner{position:relative;width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center}
+/* Background grid lines */
+.tshirt-inner::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(231,83,20,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(231,83,20,0.025) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+/* Vignette */
+.tshirt-inner::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.7) 100%);pointer-events:none}
 
-/* ═══ ACTIVE PUNCHLINE ═══ */
+/* T-shirt silhouette */
+.tshirt-silhouette{position:absolute;top:5%;width:70%;opacity:0.12}
+
+/* Patch in center of t-shirt */
+.patch-visual{position:relative;z-index:2;width:55%;max-width:220px;aspect-ratio:1;background:#111;border:3px dashed rgba(231,83,20,0.35);border-radius:var(--r-md);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--s-16);gap:var(--s-8);animation:none}
+.patch-visual::before{content:'';position:absolute;inset:-6px;border:1px solid rgba(231,83,20,0.1);border-radius:calc(var(--r-md) + 4px);pointer-events:none}
+
+.patch-qr{width:60%;aspect-ratio:1;border-radius:4px;overflow:hidden;background:#1a1a1a}
+.patch-qr img{width:100%;height:100%;display:block}
+.patch-punchline-label{font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.3;max-width:90%}
+.patch-edition{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--orange);letter-spacing:0.1em}
+
+/* Data overlays on tshirt */
+.tshirt-data-tr{position:absolute;top:38%;right:var(--s-16);z-index:3;text-align:right;font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;line-height:2}
+.tshirt-data-bl{position:absolute;bottom:var(--s-16);left:var(--s-16);right:var(--s-16);z-index:3;font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:0.04em;line-height:1.8}
+.tshirt-data-bl .tshirt-row{display:flex;justify-content:space-between}
+
+/* ═══ Active punchline card ═══ */
 .active-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-16) var(--s-20);position:relative;overflow:hidden}
 .active-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);opacity:0.5}
 .active-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:dotPulse 1.5s infinite;box-shadow:0 0 8px rgba(52,211,153,0.4)}
 .change-btn{flex-shrink:0;padding:var(--s-8) var(--s-16);border-radius:var(--r-sm);background:rgba(231,83,20,0.08);border:1px solid rgba(231,83,20,0.2);color:var(--orange);font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:0.06em;text-transform:uppercase;transition:all 150ms var(--ease)}
 .change-btn:active{transform:scale(0.95)}
 
-/* ═══ SCAN SCREEN ═══ */
+/* ═══ Scan screen ═══ */
 .scan-screen{position:relative}
 .scan-screen::before{content:'';position:absolute;top:10%;left:50%;transform:translateX(-50%);width:80%;height:300px;background:radial-gradient(ellipse,rgba(231,83,20,0.08) 0%,transparent 65%);pointer-events:none}
 .scan-detect{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;text-align:center;line-height:1.6;animation:neonPulse 2.5s ease-in-out infinite;padding:0 var(--s-20);position:relative;z-index:1}
-
-/* ═══ SPEECH BUBBLE ═══ */
 .bubble-wrapper{padding:var(--s-24) var(--s-20) 0;position:relative;z-index:1}
 .speech-bubble{position:relative;border:3px solid rgba(255,255,255,0.8);border-radius:var(--r-xl);padding:var(--s-32) var(--s-24);background:rgba(15,15,15,0.95);animation:borderGlow 3s ease-in-out infinite}
 .speech-bubble::after{content:'';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:14px solid rgba(255,255,255,0.8)}
 .speech-bubble::before{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:11px solid rgba(15,15,15,0.95);z-index:1}
 .punchline-text{font-size:clamp(22px,7vw,32px);font-weight:900;text-align:center;line-height:1.15;color:var(--white);letter-spacing:-0.02em;text-transform:uppercase}
 
-/* ═══ ACTION BUTTONS ═══ */
 .action-row{display:flex;gap:var(--s-12);padding:0 var(--s-20);position:relative;z-index:1}
 .action-btn{flex:1;padding:var(--s-20) var(--s-8);border-radius:var(--r-lg);display:flex;flex-direction:column;align-items:center;gap:var(--s-8);cursor:pointer;border:none;transition:all 120ms var(--ease);-webkit-tap-highlight-color:transparent;font-family:inherit}
 .action-btn:active{transform:scale(0.94)}
@@ -150,13 +126,11 @@ html, body {
 .action-icon{font-size:24px;line-height:1}
 .action-label{font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
 
-/* ═══ CONFIRM ═══ */
 .confirm-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s-16);padding:var(--s-40) var(--s-20);text-align:center}
 .confirm-logo{animation:confirmPulse 600ms var(--ease-out) forwards,logoGlow 2.5s ease-in-out 600ms infinite}
 .confirm-title{font-size:24px;font-weight:900;letter-spacing:0.04em;text-transform:uppercase;color:var(--white);margin-top:var(--s-8)}
 .confirm-sub{font-size:15px;color:var(--text-2);font-style:italic;font-weight:500}
 
-/* ═══ BOTTOM SHEET ═══ */
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:50;display:none;opacity:0;transition:opacity 300ms var(--ease);backdrop-filter:blur(4px)}
 .sheet-overlay.open{display:block;opacity:1}
 .sheet{position:fixed;bottom:0;left:0;right:0;z-index:51;background:var(--bg);border-radius:var(--r-2xl) var(--r-2xl) 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 380ms var(--ease-out);padding-bottom:var(--sab);max-width:430px;margin:0 auto;border-top:1px solid var(--border-orange);box-shadow:0 -20px 60px rgba(231,83,20,0.08)}
@@ -164,7 +138,6 @@ html, body {
 .sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--text-3);margin:var(--s-12) auto}
 .sheet-title{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--orange);text-align:center;text-shadow:var(--text-glow)}
 
-/* ═══ PUNCHLINE LIST ═══ */
 .pl-item{width:100%;text-align:left;padding:var(--s-12) var(--s-16);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;transition:all 150ms var(--ease);font-family:inherit;-webkit-tap-highlight-color:transparent}
 .pl-item:active{transform:scale(0.98)}
 .pl-item.sel{background:rgba(231,83,20,0.06);border-color:var(--orange);box-shadow:inset 0 0 20px rgba(231,83,20,0.05)}
@@ -176,21 +149,14 @@ html, body {
 .chip-f{padding:var(--s-4) var(--s-12);border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--text-3);transition:all 150ms var(--ease);font-family:'Courier New',monospace;-webkit-tap-highlight-color:transparent}
 .chip-f.active{background:var(--orange);color:var(--black);border-color:var(--orange)}
 
-/* ═══ TOAST ═══ */
 .toast{position:fixed;top:calc(var(--sat) + 16px);left:50%;transform:translateX(-50%) translateY(-100px);background:rgba(20,20,20,0.95);color:var(--text-1);padding:var(--s-12) var(--s-24);border-radius:var(--r-full);font-size:13px;font-weight:700;z-index:100;border:1px solid var(--border-orange);backdrop-filter:blur(20px);transition:transform 350ms var(--ease-spring);pointer-events:none;box-shadow:var(--glow-sm);letter-spacing:0.02em}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-/* ═══ CLASH INPUT ═══ */
 .clash-bar{display:flex;gap:var(--s-8);padding:0 var(--s-20) var(--s-8);animation:fadeUp 250ms var(--ease)}
 .clash-send{padding:0 var(--s-24);border-radius:var(--r-sm);background:var(--orange);color:var(--black);font-weight:800;font-size:13px;border:none;cursor:pointer;font-family:inherit}
 
-/* ═══ UTILITY ═══ */
 .px{padding-left:var(--s-20);padding-right:var(--s-20)}
 .center{display:flex;align-items:center;justify-content:center}
-.mono{font-family:'Courier New',monospace}
-.orange{color:var(--orange)}
-
-/* Hidden canvas for share */
 #share-canvas{position:absolute;left:-9999px;top:-9999px}
   </style>
 </head>
@@ -231,7 +197,7 @@ html, body {
     </div>
   </div>
 
-  <!-- ═══ MON PATCH (Owner) ═══ -->
+  <!-- ═══ MON PATCH ═══ -->
   <div class="screen" id="screen-patch">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:var(--s-8);">
@@ -244,84 +210,68 @@ html, body {
       </div>
     </div>
 
-    <div class="scroll px" style="padding-top:var(--s-8);">
-      <!-- Cert ID centered -->
-      <div style="text-align:center;padding:0 0 var(--s-8);">
+    <div class="scroll">
+      <!-- Cert ID -->
+      <div style="text-align:center;padding:var(--s-8) 0 var(--s-4);">
         <p class="cert-id" id="patch-cert"></p>
       </div>
 
-      <!-- T-shirt visual -->
-      <div class="tshirt-zone" id="tshirt-zone">
-        <div class="tshirt-grid"></div>
-        <!-- SVG t-shirt back silhouette -->
-        <svg viewBox="0 0 400 500" style="width:100%;height:100%;" id="tshirt-svg">
-          <!-- Dark bg -->
-          <rect width="400" height="500" fill="#0a0a0a"/>
-          <!-- T-shirt shape -->
-          <path d="M80,60 Q80,40 100,30 L150,20 Q170,50 200,50 Q230,50 250,20 L300,30 Q320,40 320,60 L340,110 L300,120 L300,380 Q300,400 280,400 L120,400 Q100,400 100,380 L100,120 L60,110 Z" fill="#1a1a1a" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-          <!-- Collar -->
-          <path d="M150,20 Q170,55 200,55 Q230,55 250,20" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
-          <!-- Patch area on back -->
-          <rect x="155" y="130" width="90" height="90" rx="6" fill="#111" stroke="rgba(231,83,20,0.3)" stroke-width="1.5" stroke-dasharray="4 2"/>
-          <!-- QR placeholder in patch -->
-          <rect x="165" y="140" width="70" height="70" rx="3" fill="#1a1a1a"/>
-          <!-- ClashUp text in patch -->
-          <text x="200" y="178" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#e75314">clash</text>
-          <text x="200" y="192" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#e75314">up</text>
-          <!-- Stitch lines around patch -->
-          <rect x="153" y="128" width="94" height="94" rx="7" fill="none" stroke="rgba(231,83,20,0.15)" stroke-width="0.8" stroke-dasharray="3 2"/>
-        </svg>
-        <div class="tshirt-vignette"></div>
-        <!-- Data overlay right -->
-        <div class="tshirt-data-right" id="tshirt-data-right"></div>
-        <!-- Data overlay bottom -->
-        <div class="tshirt-overlay">
-          <div id="tshirt-data-bottom" class="tshirt-data"></div>
-        </div>
-      </div>
+      <!-- T-shirt mockup card — like the prez -->
+      <div class="tshirt-card">
+        <div class="tshirt-inner">
+          <!-- T-shirt SVG silhouette -->
+          <svg class="tshirt-silhouette" viewBox="0 0 400 480" fill="none">
+            <path d="M80,55 Q80,35 100,25 L150,15 Q170,50 200,50 Q230,50 250,15 L300,25 Q320,35 320,55 L345,115 L300,125 L300,400 Q300,420 280,420 L120,420 Q100,420 100,400 L100,125 L55,115 Z" fill="#161616" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+            <path d="M150,15 Q170,55 200,55 Q230,55 250,15" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.5"/>
+          </svg>
 
-      <!-- Active Punchline -->
-      <div id="active-zone" style="display:none;animation:fadeUp 300ms var(--ease);">
-        <div class="active-card" style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-12);">
-          <div style="flex:1;min-width:0;">
-            <div style="display:flex;align-items:center;gap:var(--s-8);margin-bottom:var(--s-8);">
-              <span class="active-dot"></span>
-              <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-3);font-weight:700;">Punchline active</span>
-            </div>
-            <p id="active-text" style="font-size:15px;font-weight:800;line-height:1.3;"></p>
+          <!-- The patch on the t-shirt back -->
+          <div class="patch-visual" id="patch-visual">
+            <div class="patch-qr" id="patch-qr-mini"></div>
+            <div class="patch-punchline-label" id="patch-punchline-mini">on a tout fait à l'envers</div>
+            <div class="patch-edition" id="patch-edition"></div>
           </div>
-          <button class="change-btn" onclick="openSheet()">CHANGER</button>
+
+          <!-- Data top-right -->
+          <div class="tshirt-data-tr" id="tshirt-data-tr"></div>
+          <!-- Data bottom -->
+          <div class="tshirt-data-bl" id="tshirt-data-bl"></div>
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div id="empty-zone" style="text-align:center;padding:var(--s-16) 0;">
-        <p style="font-size:14px;color:var(--text-2);margin-bottom:var(--s-16);">Aucune punchline active</p>
+      <!-- Active Punchline card -->
+      <div class="px" style="padding-top:var(--s-16);">
+        <div id="active-zone" style="display:none;animation:fadeUp 300ms var(--ease);">
+          <div class="active-card" style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-12);">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:var(--s-8);margin-bottom:var(--s-8);">
+                <span class="active-dot"></span>
+                <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-3);font-weight:700;">Punchline active</span>
+              </div>
+              <p id="active-text" style="font-size:15px;font-weight:800;line-height:1.3;"></p>
+            </div>
+            <button class="change-btn" onclick="openSheet()">CHANGER</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Bottom actions -->
+    <!-- Bottom actions — ALWAYS visible -->
     <div class="px" style="padding:var(--s-12) var(--s-20) var(--s-20);display:flex;flex-direction:column;gap:var(--s-8);flex-shrink:0;">
       <button class="btn btn-1" id="btn-activate" onclick="openSheet()">ACTIVER MON PATCH</button>
-      <button class="btn btn-2" onclick="sharePatchImage()" id="btn-share" style="display:none;">PARTAGER MON PATCH</button>
+      <button class="btn btn-2" onclick="sharePatchImage()" id="btn-share">PARTAGER MON PATCH</button>
       <button class="btn btn-3" onclick="simulateScan()" style="font-size:12px;">SIMULER UN SCAN</button>
     </div>
   </div>
 
   <!-- ═══ SCAN ═══ -->
   <div class="screen scan-screen" id="screen-scan">
-    <div class="center" style="padding:var(--s-24) 0 var(--s-8);position:relative;z-index:1;">
-      <div id="scan-logo"></div>
-    </div>
-    <div style="padding:var(--s-4) var(--s-20) var(--s-16);">
-      <p class="scan-detect" id="scan-detect"></p>
-    </div>
+    <div class="center" style="padding:var(--s-24) 0 var(--s-8);position:relative;z-index:1;"><div id="scan-logo"></div></div>
+    <div style="padding:var(--s-4) var(--s-20) var(--s-16);"><p class="scan-detect" id="scan-detect"></p></div>
     <div class="scroll" style="display:flex;align-items:center;">
       <div style="width:100%;">
         <div class="bubble-wrapper" id="scan-card-anim">
-          <div class="speech-bubble">
-            <p class="punchline-text" id="scan-text"></p>
-          </div>
+          <div class="speech-bubble"><p class="punchline-text" id="scan-text"></p></div>
         </div>
         <div id="scan-vals" style="display:none;text-align:center;margin-top:var(--s-24);position:relative;z-index:1;">
           <p style="font-size:14px;font-weight:800;color:var(--orange);text-shadow:0 0 10px rgba(231,83,20,0.3);"><span id="scan-val-n">0</span> ⚡</p>
@@ -331,28 +281,17 @@ html, body {
     <div id="clash-area"></div>
     <div style="padding:var(--s-12) 0 var(--s-8);">
       <div class="action-row">
-        <button class="action-btn action-clash" onclick="onClash()">
-          <span class="action-icon" id="clash-icon"></span>
-          <span class="action-label">CLASHER</span>
-        </button>
-        <button class="action-btn action-validate" onclick="onValidate()" id="btn-validate">
-          <span class="action-icon">⚡</span>
-          <span class="action-label" id="val-label">VALIDER (+1⚡)</span>
-        </button>
+        <button class="action-btn action-clash" onclick="onClash()"><span class="action-icon" id="clash-icon"></span><span class="action-label">CLASHER</span></button>
+        <button class="action-btn action-validate" onclick="onValidate()" id="btn-validate"><span class="action-icon">⚡</span><span class="action-label" id="val-label">VALIDER (+1⚡)</span></button>
       </div>
     </div>
-    <div class="px" style="padding-bottom:var(--s-20);">
-      <button class="btn btn-3" onclick="leaveScan()" style="font-size:12px;">RETOUR</button>
-    </div>
+    <div class="px" style="padding-bottom:var(--s-20);"><button class="btn btn-3" onclick="leaveScan()" style="font-size:12px;">RETOUR</button></div>
   </div>
 
   <!-- ═══ CONFIRM ═══ -->
   <div class="screen" id="screen-confirm">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:var(--s-8);">
-        <div id="confirm-logo-sm"></div>
-        <p class="logo-text">clash<span>up</span></p>
-      </div>
+      <div style="display:flex;align-items:center;gap:var(--s-8);"><div id="confirm-logo-sm"></div><p class="logo-text">clash<span>up</span></p></div>
       <p class="cert-id" id="confirm-cert"></p>
     </div>
     <div class="confirm-zone">
@@ -360,322 +299,190 @@ html, body {
       <h2 class="confirm-title">PUNCHLINE ACTIVÉE</h2>
       <p class="confirm-sub">Ton dos parle pour toi</p>
     </div>
-    <div class="px" style="padding-bottom:var(--s-20);flex-shrink:0;">
-      <button class="btn btn-1" onclick="goBack()">RETOUR AU CLASHBOARD</button>
-    </div>
+    <div class="px" style="padding-bottom:var(--s-20);flex-shrink:0;"><button class="btn btn-1" onclick="goBack()">RETOUR AU CLASHBOARD</button></div>
   </div>
 
   <!-- ═══ BOTTOM SHEET ═══ -->
   <div class="sheet-overlay" id="sheet-bg" onclick="closeSheet()"></div>
   <div class="sheet" id="sheet">
     <div class="sheet-handle"></div>
-    <div class="px" style="padding-bottom:var(--s-16);">
-      <h2 class="sheet-title">ÉCRIS TA PUNCHLINE OU<br>CHOISIS-EN UNE</h2>
-    </div>
-    <div class="px" style="padding-bottom:var(--s-12);">
-      <p style="font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-1);">CRÉER TA PUNCHLINE CUSTOM</p>
-    </div>
+    <div class="px" style="padding-bottom:var(--s-16);"><h2 class="sheet-title">ÉCRIS TA PUNCHLINE OU<br>CHOISIS-EN UNE</h2></div>
+    <div class="px" style="padding-bottom:var(--s-12);"><p style="font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-1);">CRÉER TA PUNCHLINE CUSTOM</p></div>
     <div class="px" style="display:flex;gap:var(--s-8);padding-bottom:var(--s-16);">
       <input class="input input-mono" type="text" id="inp-custom" placeholder="[ TAPE TON TEXTE ICI.. ]" maxlength="60" oninput="onCustom(this)" style="flex:1;">
-      <div style="display:flex;align-items:center;gap:var(--s-4);padding:0 var(--s-12);border-radius:var(--r-sm);background:var(--orange);flex-shrink:0;">
-        <span style="font-size:12px;font-weight:800;color:var(--black);">15 CC</span>
-      </div>
+      <div style="display:flex;align-items:center;padding:0 var(--s-12);border-radius:var(--r-sm);background:var(--orange);flex-shrink:0;"><span style="font-size:12px;font-weight:800;color:var(--black);">15 CC</span></div>
     </div>
     <div class="px" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:var(--s-12);">
-      <div style="display:flex;gap:var(--s-8);">
-        <button class="chip-f active" onclick="setF('tout',this)">[ TOUT ]</button>
-        <button class="chip-f" onclick="setF('trend',this)">[ TRENDING ]</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:var(--s-4);">
-        <span id="coins" style="font-size:13px;font-weight:800;color:var(--orange);">475</span>
-        <span style="font-size:14px;">🪙</span>
-      </div>
+      <div style="display:flex;gap:var(--s-8);"><button class="chip-f active" onclick="setF('tout',this)">[ TOUT ]</button><button class="chip-f" onclick="setF('trend',this)">[ TRENDING ]</button></div>
+      <div style="display:flex;align-items:center;gap:var(--s-4);"><span id="coins" style="font-size:13px;font-weight:800;color:var(--orange);">475</span><span style="font-size:14px;">🪙</span></div>
     </div>
     <div class="scroll px" style="padding-bottom:var(--s-8);display:flex;flex-direction:column;gap:var(--s-8);" id="pl-list"></div>
-    <div class="px" style="padding:var(--s-12) var(--s-20) var(--s-20);">
-      <button class="btn btn-1" id="btn-charge" onclick="chargePatch()" disabled>CHARGER MON PATCH</button>
-    </div>
+    <div class="px" style="padding:var(--s-12) var(--s-20) var(--s-20);"><button class="btn btn-1" id="btn-charge" onclick="chargePatch()" disabled>CHARGER MON PATCH</button></div>
   </div>
 
   <div class="toast" id="toast"></div>
 </div>
 
-<!-- Hidden canvas for generating share image -->
 <canvas id="share-canvas" width="600" height="600"></canvas>
 
 <script>
-/* ═══════════════════════════════════════════════
-   CLASHUP APPAREL V3 — T-shirt visual + Patch share
-   ═══════════════════════════════════════════════ */
+let token=null,currentUser=null,patch=null,selIdx=null,customTxt='',localVals=0,clashOpen=false,clashDone=false,punchCatalog=[];
 
-let token = null;
-let currentUser = null;
-let patch = null;
-let selIdx = null;
-let customTxt = '';
-let localVals = 0;
-let clashOpen = false;
-let clashDone = false;
-let punchCatalog = [];
-
-// ── SVG Logo ──
-function logoSVG(s, c, glow) {
-  const f = glow ? ` style="filter:drop-shadow(0 0 6px ${c}44)"` : '';
-  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100" fill="none"${f}>
-    <path d="M48 15C30 15 15 28 15 44c0 10 5.5 18.5 14 24l-4 14 12-8c3.5 1.2 7.2 1.8 11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <path d="M52 15c18 0 33 13 33 29 0 10-5.5 18.5-14 24l4 14-12-8c-3.5 1.2-7.2 1.8-11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <path d="M55 22L43 48h14L45 78" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  </svg>`;
+function logoSVG(s,c,glow){
+  const f=glow?` style="filter:drop-shadow(0 0 6px ${c}44)"`:'';
+  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100" fill="none"${f}><path d="M48 15C30 15 15 28 15 44c0 10 5.5 18.5 14 24l-4 14 12-8c3.5 1.2 7.2 1.8 11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M52 15c18 0 33 13 33 29 0 10-5.5 18.5-14 24l4 14-12-8c-3.5 1.2-7.2 1.8-11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M55 22L43 48h14L45 78" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 }
 
-function authHeaders() {
-  const h = { 'Content-Type': 'application/json' };
-  if (token) h['Authorization'] = `Bearer ${token}`;
-  return h;
-}
+function authHeaders(){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;return h}
 
-const api = {
-  login: (u,p) => fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})}).then(r=>r.json()),
-  signup: (u,e,p) => fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,email:e,password:p})}).then(r=>r.json()),
-  logout: () => fetch('/api/auth/logout',{method:'POST',headers:authHeaders()}).catch(()=>{}),
-  me: () => fetch('/api/auth/me',{headers:authHeaders()}).then(r=>r.json()).catch(()=>null),
-  getPatch: (id) => fetch(`/api/patch/${id}`).then(r=>r.json()).catch(()=>null),
-  punch: (id,t,c) => fetch(`/api/patch/${id}/punchline`,{method:'POST',headers:authHeaders(),body:JSON.stringify({punchline:t,cost:c})}).then(r=>r.json()).catch(()=>null),
-  clash: (id,t) => fetch(`/api/patch/${id}/clash`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t,author:'Scanner'})}).catch(()=>{}),
-  validate: (id) => fetch(`/api/patch/${id}/validate`,{method:'POST',headers:{'Content-Type':'application/json'}}).then(r=>r.json()).catch(()=>({})),
-  catalog: () => fetch('/api/punchlines').then(r=>r.json()).catch(()=>[]),
+const api={
+  login:(u,p)=>fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})}).then(r=>r.json()),
+  signup:(u,e,p)=>fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,email:e,password:p})}).then(r=>r.json()),
+  logout:()=>fetch('/api/auth/logout',{method:'POST',headers:authHeaders()}).catch(()=>{}),
+  me:()=>fetch('/api/auth/me',{headers:authHeaders()}).then(r=>r.json()).catch(()=>null),
+  getPatch:(id)=>fetch(`/api/patch/${id}`).then(r=>r.json()).catch(()=>null),
+  punch:(id,t,c)=>fetch(`/api/patch/${id}/punchline`,{method:'POST',headers:authHeaders(),body:JSON.stringify({punchline:t,cost:c})}).then(r=>r.json()).catch(()=>null),
+  clash:(id,t)=>fetch(`/api/patch/${id}/clash`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t,author:'Scanner'})}).catch(()=>{}),
+  validate:(id)=>fetch(`/api/patch/${id}/validate`,{method:'POST',headers:{'Content-Type':'application/json'}}).then(r=>r.json()).catch(()=>({})),
+  catalog:()=>fetch('/api/punchlines').then(r=>r.json()).catch(()=>[]),
 };
 
-function qrUrl(url, size) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&color=e75314&bgcolor=000000&ecc=H&format=png`;
-}
+function qrUrl(url,size){return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&color=e75314&bgcolor=000000&ecc=H&format=png`}
+function qrUrlSvg(url,size){return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&color=e75314&bgcolor=111111&ecc=H&format=svg`}
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(`screen-${id}`).classList.add('active');
-}
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2200);
-}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(`screen-${id}`).classList.add('active')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 // ═══ AUTH ═══
-async function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  if (!u||!p) { document.getElementById('login-err').textContent = 'Remplis tous les champs'; return; }
-  const res = await api.login(u,p);
-  if (res.success) { token=res.token; currentUser=res.user; localStorage.setItem('cu_token',token); await loadMyPatch(); }
-  else document.getElementById('login-err').textContent = res.error||'Erreur';
+async function doLogin(){
+  const u=document.getElementById('login-user').value.trim(),p=document.getElementById('login-pass').value;
+  if(!u||!p){document.getElementById('login-err').textContent='Remplis tous les champs';return}
+  const res=await api.login(u,p);
+  if(res.success){token=res.token;currentUser=res.user;localStorage.setItem('cu_token',token);await loadMyPatch()}
+  else document.getElementById('login-err').textContent=res.error||'Erreur';
+}
+async function doSignup(){
+  const u=document.getElementById('signup-user').value.trim(),e=document.getElementById('signup-email').value.trim(),p=document.getElementById('signup-pass').value;
+  if(!u||!p){document.getElementById('signup-err').textContent='Pseudo et mot de passe requis';return}
+  const res=await api.signup(u,e,p);
+  if(res.success){token=res.token;currentUser=res.user;localStorage.setItem('cu_token',token);await loadMyPatch();toast('Compte créé !')}
+  else document.getElementById('signup-err').textContent=res.error||'Erreur';
+}
+async function doLogout(){await api.logout();token=null;currentUser=null;patch=null;localStorage.removeItem('cu_token');showScreen('login')}
+async function loadMyPatch(){
+  const me=await api.me();if(!me||me.error){doLogout();return}
+  currentUser=me.user;patch=me.patch;punchCatalog=await api.catalog();renderPatch();showScreen('patch');
 }
 
-async function doSignup() {
-  const u = document.getElementById('signup-user').value.trim();
-  const e = document.getElementById('signup-email').value.trim();
-  const p = document.getElementById('signup-pass').value;
-  if (!u||!p) { document.getElementById('signup-err').textContent = 'Pseudo et mot de passe requis'; return; }
-  const res = await api.signup(u,e,p);
-  if (res.success) { token=res.token; currentUser=res.user; localStorage.setItem('cu_token',token); await loadMyPatch(); toast('Compte créé ! Ton patch est prêt'); }
-  else document.getElementById('signup-err').textContent = res.error||'Erreur';
-}
+// ═══ RENDER PATCH ═══
+function renderPatch(){
+  if(!patch) return;
+  document.getElementById('patch-logo').innerHTML=logoSVG(26,'#e75314',true);
+  document.getElementById('patch-cert').textContent='CERTIFICATE_ID: '+patch.certificateId;
+  document.getElementById('user-display').textContent='@'+currentUser.username;
 
-async function doLogout() { await api.logout(); token=null; currentUser=null; patch=null; localStorage.removeItem('cu_token'); showScreen('login'); }
+  const scanUrl=patch.scanUrl||`${location.origin}/scan/${patch.id}`;
 
-async function loadMyPatch() {
-  const me = await api.me();
-  if (!me||me.error) { doLogout(); return; }
-  currentUser=me.user; patch=me.patch;
-  punchCatalog = await api.catalog();
-  renderPatch(); showScreen('patch');
-}
+  // Mini QR in the patch visual on the tshirt
+  document.getElementById('patch-qr-mini').innerHTML=`<img src="${qrUrlSvg(scanUrl,200)}" style="width:100%;height:100%;display:block;">`;
 
-// ═══ PATCH SCREEN ═══
-function renderPatch() {
-  if (!patch) return;
-  document.getElementById('patch-logo').innerHTML = logoSVG(26,'#e75314',true);
-  document.getElementById('patch-cert').textContent = patch.certificateId;
-  document.getElementById('user-display').textContent = `@${currentUser.username}`;
+  // Punchline label in patch
+  const pLabel=document.getElementById('patch-punchline-mini');
+  pLabel.textContent=patch.punchline?patch.punchline.toLowerCase():'on a tout fait à l\'envers';
+
+  // Edition
+  document.getElementById('patch-edition').textContent=`LTD EDITION : ${patch.number.split('/')[0].trim()}`;
 
   // T-shirt data overlays
-  document.getElementById('tshirt-data-right').innerHTML = `SERIE: ${patch.series}<br>NO: ${patch.number}`;
-  document.getElementById('tshirt-data-bottom').innerHTML = `
-    <div class="tshirt-row"><span>BATCH_REF: ${patch.batchRef}</span><span>CLASH_LV: ${patch.clashLv}</span></div>
-    <div style="margin-top:4px;">ORIGINE: ${patch.origin}<br>MATIÈRE: ${patch.material}<br>PROCESS: ${patch.process}</div>`;
+  document.getElementById('tshirt-data-tr').innerHTML=`SERIE: ${patch.series}<br>NO: ${patch.number}`;
+  document.getElementById('tshirt-data-bl').innerHTML=`<div class="tshirt-row"><span>BATCH_REF: ${patch.batchRef}</span><span>CLASH_LV: ${patch.clashLv}</span></div>ORIGINE: ${patch.origin}<br>MATIÈRE: ${patch.material}<br>PROCESS: ${patch.process}`;
 
-  const az = document.getElementById('active-zone');
-  const ez = document.getElementById('empty-zone');
-  const bs = document.getElementById('btn-share');
-  const ba = document.getElementById('btn-activate');
-
-  if (patch.punchline) {
-    az.style.display = 'block'; ez.style.display = 'none'; bs.style.display = 'block';
-    ba.textContent = 'CHANGER MA PUNCHLINE'; ba.onclick = openSheet;
-    document.getElementById('active-text').textContent = `"${patch.punchline}"`;
+  // Active punchline card
+  const az=document.getElementById('active-zone');
+  const ba=document.getElementById('btn-activate');
+  if(patch.punchline){
+    az.style.display='block';
+    ba.textContent='CHANGER MA PUNCHLINE';
+    document.getElementById('active-text').textContent='"'+patch.punchline+'"';
   } else {
-    az.style.display = 'none'; ez.style.display = 'block'; bs.style.display = 'none';
-    ba.textContent = 'ACTIVER MON PATCH'; ba.onclick = openSheet;
+    az.style.display='none';
+    ba.textContent='ACTIVER MON PATCH';
   }
 }
 
-// ═══ SHARE — Generate patch image with QR + punchline ═══
-async function sharePatchImage() {
-  if (!patch?.punchline) { toast('Active une punchline d\'abord'); return; }
+// ═══ SHARE — Generate patch image (DA: black bg, orange stitch border, QR, punchline, edition) ═══
+async function sharePatchImage(){
+  const scanUrl=patch?.scanUrl||`${location.origin}/scan/${patch?.id}`;
+  const canvas=document.getElementById('share-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=600,H=600;canvas.width=W;canvas.height=H;
 
-  const scanUrl = patch.scanUrl || `${location.origin}/scan/${patch.id}`;
-  const canvas = document.getElementById('share-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = 600, H = 600;
-  canvas.width = W; canvas.height = H;
+  // Full black bg
+  ctx.fillStyle='#111111';ctx.fillRect(0,0,W,H);
 
-  // Background
-  ctx.fillStyle = '#111111';
-  ctx.fillRect(0, 0, W, H);
+  // Orange stitch border (dashed)
+  ctx.strokeStyle='#e75314';ctx.lineWidth=3;ctx.setLineDash([8,5]);
+  roundRect(ctx,24,24,W-48,H-48,16);ctx.stroke();ctx.setLineDash([]);
 
-  // Rounded patch border with stitch effect
-  const pad = 30, r = 20;
-  ctx.strokeStyle = '#e75314';
-  ctx.lineWidth = 3;
-  ctx.setLineDash([6, 4]);
-  roundRect(ctx, pad, pad, W-pad*2, H-pad*2, r);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  // Inner dark
+  ctx.fillStyle='#0a0a0a';roundRect(ctx,34,34,W-68,H-68,12);ctx.fill();
 
-  // Inner dark fill
-  ctx.fillStyle = '#0a0a0a';
-  roundRect(ctx, pad+8, pad+8, W-pad*2-16, H-pad*2-16, r-4);
-  ctx.fill();
+  // Load QR
+  const qrImg=new Image();qrImg.crossOrigin='anonymous';
+  qrImg.src=qrUrl(scanUrl,260);
 
-  // Load QR image
-  const qrImg = new Image();
-  qrImg.crossOrigin = 'anonymous';
-  qrImg.src = qrUrl(scanUrl, 280);
+  qrImg.onload=function(){
+    const qS=260,qX=(W-qS)/2,qY=70;
 
-  qrImg.onload = async function() {
-    // Draw QR centered
-    const qrSize = 280;
-    const qrX = (W - qrSize) / 2;
-    const qrY = 80;
+    // White bg behind QR for readability
+    ctx.fillStyle='#ffffff';roundRect(ctx,qX-12,qY-12,qS+24,qS+24,8);ctx.fill();
+    ctx.drawImage(qrImg,qX,qY,qS,qS);
 
-    // White bg for QR readability
-    ctx.fillStyle = '#ffffff';
-    roundRect(ctx, qrX-10, qrY-10, qrSize+20, qrSize+20, 8);
-    ctx.fill();
+    // ClashUp logo overlay center
+    const ls=56,lx=(W-ls)/2,ly=qY+(qS-ls)/2;
+    ctx.fillStyle='#e75314';roundRect(ctx,lx,ly,ls,ls,10);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 14px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('clash',W/2,ly+24);ctx.fillText('up',W/2,ly+40);
 
-    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    // Punchline text
+    const punchText=patch?.punchline||'ON A TOUT FAIT À L\'ENVERS';
+    ctx.fillStyle='#ffffff';ctx.font='bold 22px Inter,Helvetica Neue,sans-serif';ctx.textAlign='center';
+    const words=punchText.toLowerCase().split(' ');let lines=[],line='';
+    for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>W-120){lines.push(line);line=w}else line=t}
+    if(line)lines.push(line);
+    const pY=qY+qS+50;
+    lines.forEach((l,i)=>ctx.fillText(l,W/2,pY+i*28));
 
-    // ClashUp logo overlay on QR center
-    ctx.fillStyle = '#e75314';
-    const logoS = 60;
-    const logoX = (W-logoS)/2, logoY = qrY + (qrSize-logoS)/2;
-    roundRect(ctx, logoX, logoY, logoS, logoS, 10);
-    ctx.fill();
+    // LTD EDITION
+    ctx.fillStyle='#e75314';ctx.font='bold 16px Courier New,monospace';
+    const num=patch?.number?.split('/')[0]?.trim()||'001';
+    ctx.fillText('LTD EDITION : '+num,W/2,H-55);
 
-    // Logo text
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('clash', W/2, logoY + 28);
-    ctx.fillText('up', W/2, logoY + 44);
-
-    // Punchline text below QR
-    const punchY = qrY + qrSize + 50;
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 22px Inter, Helvetica Neue, sans-serif';
-    ctx.textAlign = 'center';
-
-    // Word wrap punchline
-    const words = patch.punchline.split(' ');
-    let lines = [];
-    let line = '';
-    for (const w of words) {
-      const test = line ? line + ' ' + w : w;
-      if (ctx.measureText(test).width > W - 100) { lines.push(line); line = w; }
-      else line = test;
-    }
-    if (line) lines.push(line);
-
-    lines.forEach((l, i) => {
-      ctx.fillText(l, W/2, punchY + i * 30);
-    });
-
-    // LTD EDITION at bottom
-    const edY = H - 60;
-    ctx.fillStyle = '#e75314';
-    ctx.font = 'bold 16px Courier New, monospace';
-    ctx.fillText(`LTD EDITION : ${patch.number.split('/')[0].trim()}`, W/2, edY);
-
-    // Convert to blob and share
-    canvas.toBlob(async (blob) => {
-      if (!blob) { toast('Erreur génération image'); return; }
-
-      const file = new File([blob], `clashup-patch-${patch.id}.png`, { type: 'image/png' });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            title: 'ClashUp — Mon Patch',
-            text: `${patch.punchline} — Scanne mon patch ClashUp ! 🔥`,
-            files: [file],
-          });
-        } catch(e) { /* user cancelled */ }
-      } else {
-        // Fallback: download
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `clashup-patch-${patch.id}.png`;
-        a.click();
-        toast('Image téléchargée !');
+    // Share
+    canvas.toBlob(async(blob)=>{
+      if(!blob){toast('Erreur');return}
+      const file=new File([blob],`clashup-${patch.id}.png`,{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({title:'ClashUp Patch',text:`${patch?.punchline||'Scan mon patch !'} 🔥`,files:[file]})}catch(e){}
+      }else{
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`clashup-${patch.id}.png`;a.click();toast('Image téléchargée !');
       }
-    }, 'image/png');
+    },'image/png');
   };
-
-  qrImg.onerror = function() {
-    toast('Erreur chargement QR');
-  };
+  qrImg.onerror=()=>toast('Erreur QR');
 }
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
-  ctx.closePath();
-}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
 
-// ═══ BOTTOM SHEET ═══
-function openSheet() {
-  selIdx=null; customTxt='';
-  document.getElementById('inp-custom').value='';
-  renderList(); updateCharge();
-  document.getElementById('coins').textContent = patch?.clashCoins||475;
-  document.getElementById('sheet-bg').classList.add('open');
-  setTimeout(()=>document.getElementById('sheet').classList.add('open'),10);
-}
-function closeSheet() {
-  document.getElementById('sheet').classList.remove('open');
-  setTimeout(()=>document.getElementById('sheet-bg').classList.remove('open'),350);
-}
+// ═══ SHEET ═══
+function openSheet(){selIdx=null;customTxt='';document.getElementById('inp-custom').value='';renderList();updateCharge();document.getElementById('coins').textContent=patch?.clashCoins||475;document.getElementById('sheet-bg').classList.add('open');setTimeout(()=>document.getElementById('sheet').classList.add('open'),10)}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');setTimeout(()=>document.getElementById('sheet-bg').classList.remove('open'),350)}
 
-function renderList() {
-  const list = punchCatalog.length > 0 ? punchCatalog : [];
-  document.getElementById('pl-list').innerHTML = list.map((p,i) => {
-    const sel = selIdx===i ? ' sel' : '';
-    const act = patch?.punchline===p.text;
-    return `<button class="pl-item${sel}" onclick="pickPunch(${i})">
-      <div style="flex:1;min-width:0;">
-        <p class="pl-text">${p.text}</p>
-        <div style="display:flex;gap:6px;align-items:center;margin-top:3px;">
-          ${p.by?`<span class="pl-sub">${p.by}</span>`:''}
-          ${p.v>0?`<span style="font-size:10px;color:var(--text-3);">+${p.v}</span>`:''}
-          ${act?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--success-dim);color:var(--success);font-weight:700;">active</span>`:''}
-        </div>
-      </div>
-      <span class="pl-badge ${p.cc===0?'free':'paid'}">${p.cc===0?'INCLUS':p.cc+' CC'}</span>
-    </button>`;
+function renderList(){
+  const list=punchCatalog.length>0?punchCatalog:[];
+  document.getElementById('pl-list').innerHTML=list.map((p,i)=>{
+    const sel=selIdx===i?' sel':'',act=patch?.punchline===p.text;
+    return `<button class="pl-item${sel}" onclick="pickPunch(${i})"><div style="flex:1;min-width:0;"><p class="pl-text">${p.text}</p><div style="display:flex;gap:6px;align-items:center;margin-top:3px;">${p.by?`<span class="pl-sub">${p.by}</span>`:''}${p.v>0?`<span style="font-size:10px;color:var(--text-3);">+${p.v}</span>`:''}${act?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--success-dim);color:var(--success);font-weight:700;">active</span>`:''}</div></div><span class="pl-badge ${p.cc===0?'free':'paid'}">${p.cc===0?'INCLUS':p.cc+' CC'}</span></button>`;
   }).join('');
 }
 
@@ -684,37 +491,29 @@ function onCustom(el){customTxt=el.value.toUpperCase();el.value=customTxt;if(cus
 function updateCharge(){document.getElementById('btn-charge').disabled=!(customTxt.trim()||selIdx!==null)}
 function setF(f,el){document.querySelectorAll('.chip-f').forEach(c=>c.classList.remove('active'));el.classList.add('active')}
 
-async function chargePatch() {
-  const list = punchCatalog.length>0?punchCatalog:[];
-  const text = customTxt.trim()||(selIdx!==null?list[selIdx].text:null);
-  if(!text) return;
-  const cost = customTxt.trim()?15:(selIdx!==null?list[selIdx].cc:0);
-  const btn = document.getElementById('btn-charge');
-  btn.disabled=true; btn.textContent='...';
-  const res = await api.punch(patch.id,text,cost);
-  if(res?.success) {
-    patch.punchline=res.punchline; patch.clashCoins=res.clashCoins;
-    closeSheet();
+async function chargePatch(){
+  const list=punchCatalog.length>0?punchCatalog:[];
+  const text=customTxt.trim()||(selIdx!==null?list[selIdx].text:null);if(!text)return;
+  const cost=customTxt.trim()?15:(selIdx!==null?list[selIdx].cc:0);
+  const btn=document.getElementById('btn-charge');btn.disabled=true;btn.textContent='...';
+  const res=await api.punch(patch.id,text,cost);
+  if(res?.success){
+    patch.punchline=res.punchline;patch.clashCoins=res.clashCoins;closeSheet();
     document.getElementById('confirm-logo-sm').innerHTML=logoSVG(26,'#e75314',true);
     document.getElementById('confirm-cert').textContent=patch.certificateId;
     document.getElementById('confirm-logo-big').innerHTML=logoSVG(120,'#e75314',true);
-    showScreen('confirm');
-    if(navigator.vibrate) navigator.vibrate([50,30,50]);
+    showScreen('confirm');if(navigator.vibrate)navigator.vibrate([50,30,50]);
   }
-  btn.disabled=false; btn.textContent='CHARGER MON PATCH';
+  btn.disabled=false;btn.textContent='CHARGER MON PATCH';
 }
 
 function goBack(){renderPatch();showScreen('patch');toast('⚡ Punchline activée')}
 
 // ═══ SCAN ═══
-let scanPatchId = null;
-
-async function goScan(pId) {
-  const pid = pId||patch?.id;
-  if(!pid) return;
-  scanPatchId = pid;
-  const p = await api.getPatch(pid);
-  if(!p||p.error){toast('Patch introuvable');return}
+let scanPatchId=null;
+async function goScan(pId){
+  const pid=pId||patch?.id;if(!pid)return;scanPatchId=pid;
+  const p=await api.getPatch(pid);if(!p||p.error){toast('Patch introuvable');return}
   localVals=0;clashOpen=false;clashDone=false;
   document.getElementById('scan-logo').innerHTML=logoSVG(36,'#e75314',true);
   document.getElementById('scan-detect').innerHTML=`DETECTED: ${p.edition}<br>OWNER: ${p.owner}`;
@@ -724,87 +523,50 @@ async function goScan(pId) {
   document.getElementById('val-label').textContent='VALIDER (+1⚡)';
   document.getElementById('clash-area').innerHTML='';
   document.getElementById('clash-icon').innerHTML=logoSVG(28,'#000',false);
-  const card=document.getElementById('scan-card-anim');
-  card.style.animation='none';
+  const card=document.getElementById('scan-card-anim');card.style.animation='none';
   requestAnimationFrame(()=>{card.style.animation='scaleIn 500ms cubic-bezier(0.34,1.56,0.64,1) forwards'});
-  showScreen('scan');
-  if(navigator.vibrate) navigator.vibrate(50);
+  showScreen('scan');if(navigator.vibrate)navigator.vibrate(50);
 }
 
-function simulateScan() {
-  if(!patch?.punchline) {
-    api.punch(patch.id,"JE SUIS VENU, J'AI VU, J'AI RIEN COMPRIS.",0).then(res=>{
-      if(res?.success){patch.punchline=res.punchline;renderPatch()}
-      goScan(patch.id);
-    });
-  } else goScan(patch.id);
+function simulateScan(){
+  if(!patch?.punchline){api.punch(patch.id,"JE SUIS VENU, J'AI VU, J'AI RIEN COMPRIS.",0).then(res=>{if(res?.success){patch.punchline=res.punchline;renderPatch()}goScan(patch.id)})}
+  else goScan(patch.id);
 }
 
 function leaveScan(){if(currentUser&&patch){renderPatch();showScreen('patch')}else showScreen('login')}
 
-function onClash() {
-  if(clashDone) return;
-  if(!clashOpen) {
-    clashOpen=true;
-    document.getElementById('clash-area').innerHTML=`
-      <div class="clash-bar">
-        <input class="input input-mono" type="text" id="clash-txt" placeholder="[ TA RÉPONSE... ]" autofocus>
-        <button class="clash-send" onclick="sendClash()">GO</button>
-      </div>`;
+function onClash(){
+  if(clashDone)return;if(!clashOpen){clashOpen=true;
+    document.getElementById('clash-area').innerHTML=`<div class="clash-bar"><input class="input input-mono" type="text" id="clash-txt" placeholder="[ TA RÉPONSE... ]" autofocus><button class="clash-send" onclick="sendClash()">GO</button></div>`;
     document.getElementById('clash-txt').focus();
   }
 }
+async function sendClash(){const t=document.getElementById('clash-txt').value.toUpperCase();if(!t.trim())return;await api.clash(scanPatchId,t);clashDone=true;document.getElementById('clash-area').innerHTML=`<p style="text-align:center;padding:var(--s-8) 0;font-size:13px;font-weight:800;color:var(--orange);animation:fadeUp 200ms var(--ease);">CLASH ENVOYÉ 🔥</p>`;if(navigator.vibrate)navigator.vibrate([40,40,40])}
+async function onValidate(){localVals++;const res=await api.validate(scanPatchId);document.getElementById('val-label').textContent=`VALIDER (+${localVals}⚡)`;document.getElementById('scan-vals').style.display='block';document.getElementById('scan-val-n').textContent=res.validations||localVals;const btn=document.getElementById('btn-validate');btn.style.animation='shake 300ms ease-out';setTimeout(()=>btn.style.animation='none',300);if(navigator.vibrate)navigator.vibrate(25)}
 
-async function sendClash() {
-  const t=document.getElementById('clash-txt').value.toUpperCase();
-  if(!t.trim()) return;
-  await api.clash(scanPatchId,t);
-  clashDone=true;
-  document.getElementById('clash-area').innerHTML=`<p style="text-align:center;padding:var(--s-8) 0;font-size:13px;font-weight:800;color:var(--orange);animation:fadeUp 200ms var(--ease);letter-spacing:0.06em;">CLASH ENVOYÉ 🔥</p>`;
-  if(navigator.vibrate) navigator.vibrate([40,40,40]);
-}
-
-async function onValidate() {
-  localVals++;
-  const res=await api.validate(scanPatchId);
-  document.getElementById('val-label').textContent=`VALIDER (+${localVals}⚡)`;
-  document.getElementById('scan-vals').style.display='block';
-  document.getElementById('scan-val-n').textContent=res.validations||localVals;
-  const btn=document.getElementById('btn-validate');
-  btn.style.animation='shake 300ms ease-out';setTimeout(()=>btn.style.animation='none',300);
-  if(navigator.vibrate) navigator.vibrate(25);
-}
-
-function toggleCert() {
-  const b=document.getElementById('cert-body');
-  const c=document.getElementById('cert-chevron');
-  if(b.style.display==='none'){b.style.display='block';c.style.transform='rotate(180deg)'}
-  else{b.style.display='none';c.style.transform='rotate(0)'}
-}
-
-// ═══ INIT + ROUTING ═══
-async function init() {
+// ═══ INIT ═══
+async function init(){
   document.getElementById('login-logo').innerHTML=logoSVG(48,'#e75314',true);
   document.getElementById('signup-logo').innerHTML=logoSVG(48,'#e75314',true);
   document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
   document.getElementById('signup-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()});
 
-  const path = location.pathname;
-  if(path.startsWith('/scan/')) { const pid=path.split('/scan/')[1]; if(pid){goScan(pid);return} }
+  const path=location.pathname;
+  if(path.startsWith('/scan/')){const pid=path.split('/scan/')[1];if(pid){goScan(pid);return}}
 
   const stored=localStorage.getItem('cu_token');
-  if(stored) {
-    token=stored;
-    const me=await api.me();
+  if(stored){token=stored;const me=await api.me();
     if(me&&!me.error){currentUser=me.user;patch=me.patch;punchCatalog=await api.catalog();renderPatch();showScreen('patch');return}
     localStorage.removeItem('cu_token');
   }
   showScreen('login');
 }
-
 init();
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+if('serviceWorker' in navigator){
+  // Unregister old SW then register new one
+  navigator.serviceWorker.getRegistrations().then(regs=>{regs.forEach(r=>r.unregister())});
+  setTimeout(()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}),1000);
+}
 </script>
-
 </body>
 </html>

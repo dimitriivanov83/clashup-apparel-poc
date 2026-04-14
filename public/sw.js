@@ -1,30 +1,30 @@
-// ClashUp Apparel — Service Worker (PWA offline shell)
-const CACHE_NAME = 'clashup-apparel-v1';
-const SHELL_FILES = ['/', '/manifest.json'];
+// ClashUp Apparel — Service Worker V3 (network-first for everything)
+const CACHE_NAME = 'clashup-apparel-v3';
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_FILES))
-  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
+  // Delete ALL old caches
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
-  // Network-first for API, cache-first for shell
-  if (e.request.url.includes('/api/')) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-  } else {
-    e.respondWith(
-      caches.match(e.request).then((cached) => cached || fetch(e.request))
-    );
-  }
+  // Network-first for everything — always get fresh content
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        // Cache a copy for offline
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
 });
