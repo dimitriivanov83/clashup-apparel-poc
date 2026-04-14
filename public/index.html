@@ -32,9 +32,8 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 @keyframes dotPulse{0%,100%{opacity:1}50%{opacity:0.35}}
 @keyframes scaleIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}60%{transform:translateX(3px)}}
-@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 20px rgba(231,83,20,0.3))}50%{filter:drop-shadow(0 0 40px rgba(231,83,20,0.5)) drop-shadow(0 0 80px rgba(231,83,20,0.2))}}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 10px rgba(231,83,20,0.3))}50%{filter:drop-shadow(0 0 25px rgba(231,83,20,0.5))}}
 @keyframes confirmPulse{0%{transform:scale(0.7);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
-@keyframes breathe{0%,100%{opacity:0.5}50%{opacity:0.8}}
 
 .app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--sat);padding-bottom:var(--sab);max-width:430px;margin:0 auto;position:relative;background:var(--bg)}
 @media(min-width:431px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border)}}
@@ -43,11 +42,15 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:0}
 
+/* Logo image */
+.logo-img{height:32px;width:auto;display:block}
+.logo-img-sm{height:26px;width:auto;display:block}
+.logo-img-md{height:50px;width:auto;display:block;animation:logoGlow 3s ease-in-out infinite}
+.logo-img-lg{height:90px;width:auto;display:block;animation:confirmPulse 600ms var(--ease-out) forwards,logoGlow 2.5s ease-in-out 600ms infinite}
+
 /* ═══ TOPBAR ═══ */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;flex-shrink:0;position:relative;z-index:2}
 .topbar::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--border-orange),transparent)}
-.logo-text{font-size:20px;font-weight:900;letter-spacing:-0.03em;text-transform:lowercase}
-.logo-text span{color:var(--orange)}
 .cert-id{font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.06em;color:var(--text-3);text-transform:uppercase}
 
 /* ═══ BUTTONS ═══ */
@@ -66,10 +69,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 
 /* ═══ AUTH ═══ */
 .auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 32px;text-align:center}
-.auth-logo{margin-bottom:8px;animation:logoGlow 3s ease-in-out infinite}
-.auth-title{font-size:28px;font-weight:900;letter-spacing:-0.03em;margin-bottom:4px}
-.auth-title span{color:var(--orange)}
-.auth-sub{font-size:13px;color:var(--text-3);margin-bottom:32px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600}
+.auth-sub{font-size:13px;color:var(--text-3);margin:12px 0 32px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600}
 .auth-form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
 .auth-switch{margin-top:20px;font-size:13px;color:var(--text-2)}
 .auth-switch a{color:var(--orange);text-decoration:none;font-weight:700;cursor:pointer}
@@ -79,98 +79,49 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 .auth-logout{background:none;border:none;color:var(--text-3);font-size:11px;cursor:pointer;font-family:inherit;padding:4px}
 
 /* ═══════════════════════════════════════════════════════ */
-/* T-SHIRT PHOTO CARD — Mockup style from presentation   */
-/* Shows a realistic back view, NO QR code visible        */
+/* T-SHIRT CARD — WHITE t-shirt on black background       */
+/* No QR code visible — only in share image               */
 /* ═══════════════════════════════════════════════════════ */
 .tshirt-card{position:relative;margin:0;background:#000;overflow:hidden;flex:1;min-height:0}
 .tshirt-photo{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;overflow:hidden}
 
-/* Photographic background — man's back in black t-shirt */
-.tshirt-photo-bg{
-  position:absolute;inset:0;
-  /* Realistic studio photo feel: dark gradient simulating a person's back */
-  background:
-    /* Shoulders/neck silhouette */
-    radial-gradient(ellipse 85% 30% at 50% 18%, #1a1917 0%, transparent 100%),
-    /* Body center — lighter fabric feel */
-    radial-gradient(ellipse 60% 55% at 50% 50%, #141311 0%, #0c0b0a 40%, transparent 75%),
-    /* Left shoulder */
-    radial-gradient(ellipse 35% 20% at 22% 22%, #16150f 0%, transparent 100%),
-    /* Right shoulder */
-    radial-gradient(ellipse 35% 20% at 78% 22%, #16150f 0%, transparent 100%),
-    /* Bottom fade */
-    linear-gradient(to bottom, transparent 70%, #000 100%),
-    /* Base */
-    #060504;
-  filter:brightness(1.1);
-}
-
-/* Subtle fabric texture */
-.tshirt-photo-bg::before{
-  content:'';position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='1' height='1' fill='rgba(255,255,255,0.008)'/%3E%3C/svg%3E");
-  background-size:4px 4px;
-  opacity:0.5;
-}
-
-/* Grid overlay like in presentation */
-.tshirt-photo-bg::after{
+/* Background with subtle grid */
+.tshirt-photo::before{
   content:'';position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(231,83,20,0.015) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(231,83,20,0.015) 1px,transparent 1px);
+    linear-gradient(rgba(231,83,20,0.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(231,83,20,0.02) 1px,transparent 1px);
   background-size:28px 28px;
-  pointer-events:none;
+  pointer-events:none;z-index:0;
 }
 
-/* Neck/collar detail */
-.tshirt-neck{
-  position:absolute;top:6%;left:50%;transform:translateX(-50%);
-  width:60px;height:20px;
-  border-radius:0 0 30px 30px;
-  background:linear-gradient(to bottom, #1c1b18, #121110);
-  border-bottom:1px solid rgba(255,255,255,0.02);
-}
+/* WHITE T-shirt silhouette — clearly visible on black */
+.tshirt-svg{position:absolute;top:3%;left:50%;transform:translateX(-50%);width:80%;max-width:340px;z-index:1;filter:drop-shadow(0 4px 30px rgba(255,255,255,0.05))}
 
-/* The small ClashUp patch on the t-shirt back — like a real sewn label */
+/* The small ClashUp patch sewn on the t-shirt back */
 .tshirt-patch{
-  position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);
-  width:90px;height:90px;
-  background:#111;
-  border:2px solid rgba(231,83,20,0.35);
+  position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);
+  width:80px;height:80px;
+  background:rgba(20,20,20,0.95);
+  border:2px solid var(--orange);
   border-radius:6px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:6px;gap:2px;
-  box-shadow:0 2px 15px rgba(0,0,0,0.6);
-  z-index:2;
+  padding:5px;gap:2px;
+  box-shadow:0 2px 20px rgba(0,0,0,0.5),0 0 8px rgba(231,83,20,0.15);
+  z-index:3;
 }
-.tshirt-patch-logo{font-size:9px;font-weight:900;color:var(--orange);letter-spacing:-0.02em;line-height:1}
-.tshirt-patch-logo span{color:var(--white)}
-.tshirt-patch-line{font-family:'Courier New',monospace;font-size:5.5px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.2;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tshirt-patch-ed{font-family:'Courier New',monospace;font-size:5px;color:var(--orange);letter-spacing:0.05em;opacity:0.8}
+.tshirt-patch-logo{height:14px;width:auto}
+.tshirt-patch-line{font-family:'Courier New',monospace;font-size:5px;color:rgba(255,255,255,0.6);text-align:center;line-height:1.2;max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tshirt-patch-ed{font-family:'Courier New',monospace;font-size:4.5px;color:var(--orange);letter-spacing:0.04em}
 
 /* Certificate data overlays */
-.data-overlay{font-family:'Courier New',monospace;color:rgba(255,255,255,0.35);letter-spacing:0.04em;position:absolute;z-index:3}
-
-.data-tr{
-  top:32%;right:16px;text-align:right;
-  font-size:clamp(9px,2.3vw,11px);line-height:2;
-}
-.data-bl{
-  bottom:12px;left:16px;right:16px;
-  font-size:clamp(8px,2.1vw,10px);line-height:1.9;
-}
+.data-overlay{font-family:'Courier New',monospace;color:rgba(255,255,255,0.3);letter-spacing:0.04em;position:absolute;z-index:4}
+.data-tr{top:30%;right:16px;text-align:right;font-size:clamp(9px,2.3vw,11px);line-height:2}
+.data-bl{bottom:12px;left:16px;right:16px;font-size:clamp(8px,2.1vw,10px);line-height:1.9}
 .data-bl .data-row{display:flex;justify-content:space-between}
 
 /* Vignette */
-.tshirt-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,0.65) 100%);pointer-events:none;z-index:1}
-
-/* ═══ ACTIVE PUNCHLINE CARD ═══ */
-.active-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;position:relative;overflow:hidden}
-.active-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);opacity:0.5}
-.active-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:dotPulse 1.5s infinite;box-shadow:0 0 8px rgba(52,211,153,0.4)}
-.change-btn{flex-shrink:0;padding:8px 14px;border-radius:8px;background:rgba(231,83,20,0.08);border:1px solid rgba(231,83,20,0.2);color:var(--orange);font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:0.06em;text-transform:uppercase;transition:all 150ms var(--ease)}
-.change-btn:active{transform:scale(0.95)}
+.tshirt-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.6) 100%);pointer-events:none;z-index:2}
 
 /* ═══ SCAN SCREEN ═══ */
 .scan-screen{position:relative}
@@ -191,7 +142,6 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 .action-label{font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
 
 .confirm-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 20px;text-align:center}
-.confirm-logo{animation:confirmPulse 600ms var(--ease-out) forwards,logoGlow 2.5s ease-in-out 600ms infinite}
 .confirm-title{font-size:24px;font-weight:900;letter-spacing:0.04em;text-transform:uppercase;color:var(--white);margin-top:8px}
 .confirm-sub{font-size:15px;color:var(--text-2);font-style:italic;font-weight:500}
 
@@ -205,16 +155,16 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 
 .pl-item{width:100%;text-align:left;padding:12px 16px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;transition:all 150ms var(--ease);font-family:inherit;-webkit-tap-highlight-color:transparent}
 .pl-item:active{transform:scale(0.98)}
-.pl-item.sel{background:rgba(231,83,20,0.06);border-color:var(--orange);box-shadow:inset 0 0 20px rgba(231,83,20,0.05)}
+.pl-item.sel{background:rgba(231,83,20,0.06);border-color:var(--orange)}
 .pl-text{font-size:12px;font-weight:800;color:var(--text-1);line-height:1.3;letter-spacing:0.02em;text-transform:uppercase;font-family:'Courier New',monospace}
 .pl-sub{font-size:10px;color:var(--orange);margin-top:2px;opacity:0.7;font-family:'Courier New',monospace}
 .pl-badge{font-size:10px;font-weight:800;padding:4px 10px;border-radius:6px;white-space:nowrap;margin-left:12px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.06em}
 .pl-badge.free{background:var(--success-dim);color:var(--success)}
 .pl-badge.paid{background:var(--orange);color:var(--black)}
-.chip-f{padding:4px 12px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--text-3);transition:all 150ms var(--ease);font-family:'Courier New',monospace;-webkit-tap-highlight-color:transparent}
+.chip-f{padding:4px 12px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--text-3);transition:all 150ms var(--ease);font-family:'Courier New',monospace}
 .chip-f.active{background:var(--orange);color:var(--black);border-color:var(--orange)}
 
-.toast{position:fixed;top:calc(var(--sat) + 16px);left:50%;transform:translateX(-50%) translateY(-100px);background:rgba(20,20,20,0.95);color:var(--text-1);padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:100;border:1px solid var(--border-orange);backdrop-filter:blur(20px);transition:transform 350ms var(--ease-spring);pointer-events:none;box-shadow:var(--glow-sm);letter-spacing:0.02em}
+.toast{position:fixed;top:calc(var(--sat) + 16px);left:50%;transform:translateX(-50%) translateY(-100px);background:rgba(20,20,20,0.95);color:var(--text-1);padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:100;border:1px solid var(--border-orange);backdrop-filter:blur(20px);transition:transform 350ms var(--ease-spring);pointer-events:none;box-shadow:var(--glow-sm)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 .clash-bar{display:flex;gap:8px;padding:0 20px 8px;animation:fadeUp 250ms var(--ease)}
@@ -232,8 +182,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
   <!-- ═══ LOGIN ═══ -->
   <div class="screen active" id="screen-login">
     <div class="auth-screen">
-      <div class="auth-logo" id="login-logo"></div>
-      <h1 class="auth-title">clash<span>up</span></h1>
+      <img src="/logo-md.png" alt="ClashUp" class="logo-img-md" style="margin-bottom:8px;">
       <p class="auth-sub">Connected Apparel</p>
       <div class="auth-form">
         <input class="input" type="text" id="login-user" placeholder="Pseudo" autocomplete="username" autocapitalize="none">
@@ -248,8 +197,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
   <!-- ═══ SIGNUP ═══ -->
   <div class="screen" id="screen-signup">
     <div class="auth-screen">
-      <div class="auth-logo" id="signup-logo"></div>
-      <h1 class="auth-title">clash<span>up</span></h1>
+      <img src="/logo-md.png" alt="ClashUp" class="logo-img-md" style="margin-bottom:8px;">
       <p class="auth-sub">Crée ton compte</p>
       <div class="auth-form">
         <input class="input" type="text" id="signup-user" placeholder="Pseudo (unique)" autocomplete="username" autocapitalize="none">
@@ -263,14 +211,11 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
   </div>
 
   <!-- ═══════════════════════════════════════════════════ -->
-  <!-- MON PATCH — T-shirt photo view (NO QR visible)     -->
+  <!-- MON PATCH — WHITE t-shirt photo view               -->
   <!-- ═══════════════════════════════════════════════════ -->
   <div class="screen" id="screen-patch">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div id="patch-logo"></div>
-        <p class="logo-text">clash<span>up</span></p>
-      </div>
+      <img src="/logo-sm.png" alt="ClashUp" class="logo-img-sm">
       <div class="auth-user">
         <span class="auth-user-name" id="user-display"></span>
         <button class="auth-logout" onclick="doLogout()">Déco</button>
@@ -282,18 +227,28 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
       <p class="cert-id" id="patch-cert"></p>
     </div>
 
-    <!-- T-shirt photo card — THE MAIN VISUAL -->
+    <!-- T-shirt visual — WHITE on black -->
     <div class="tshirt-card">
       <div class="tshirt-photo">
-        <!-- Photographic background (CSS art simulating studio shot of black t-shirt back) -->
-        <div class="tshirt-photo-bg"></div>
+        <!-- WHITE T-shirt SVG silhouette — back view -->
+        <svg class="tshirt-svg" viewBox="0 0 400 500" fill="none">
+          <!-- T-shirt body -->
+          <path d="M78,70 Q78,50 98,40 L148,28 Q168,68 200,68 Q232,68 252,28 L302,40 Q322,50 322,70 L350,140 L310,152 L310,420 Q310,442 288,442 L112,442 Q90,442 90,420 L90,152 L50,140 Z"
+                fill="#e8e5e0" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <!-- Collar/neckline detail -->
+          <path d="M148,28 Q168,72 200,72 Q232,72 252,28" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="2"/>
+          <!-- Subtle seam lines -->
+          <line x1="200" y1="72" x2="200" y2="442" stroke="rgba(0,0,0,0.02)" stroke-width="1"/>
+          <!-- Shoulder seams -->
+          <path d="M98,40 L90,152" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="1"/>
+          <path d="M302,40 L310,152" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="1"/>
+          <!-- Bottom hem -->
+          <path d="M90,435 Q200,445 310,435" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="1.5"/>
+        </svg>
 
-        <!-- Collar detail -->
-        <div class="tshirt-neck"></div>
-
-        <!-- Small sewn patch on the t-shirt back — like real product -->
+        <!-- Small patch on the t-shirt back -->
         <div class="tshirt-patch" id="tshirt-patch">
-          <div class="tshirt-patch-logo"><span>clash</span><span style="color:var(--orange)">up</span></div>
+          <img src="/logo-sm.png" alt="" class="tshirt-patch-logo">
           <div class="tshirt-patch-line" id="patch-label-mini">on a tout fait à l'envers</div>
           <div class="tshirt-patch-ed" id="patch-ed-mini">LTD EDITION : 001</div>
         </div>
@@ -320,7 +275,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
       </div>
     </div>
 
-    <!-- Bottom actions — ALWAYS visible, fixed at bottom -->
+    <!-- Bottom actions -->
     <div style="padding:10px 16px 16px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;background:var(--bg);">
       <button class="btn btn-1" id="btn-activate" onclick="openSheet()">ACTIVER MON PATCH</button>
       <button class="btn btn-2" onclick="sharePatchImage()" id="btn-share">PARTAGER MON PATCH</button>
@@ -330,7 +285,9 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 
   <!-- ═══ SCAN ═══ -->
   <div class="screen scan-screen" id="screen-scan">
-    <div class="center" style="padding:24px 0 8px;position:relative;z-index:1;"><div id="scan-logo"></div></div>
+    <div class="center" style="padding:24px 0 8px;position:relative;z-index:1;">
+      <img src="/logo-sm.png" alt="ClashUp" class="logo-img" style="animation:logoGlow 3s ease-in-out infinite;">
+    </div>
     <div style="padding:4px 20px 16px;"><p class="scan-detect" id="scan-detect"></p></div>
     <div class="scroll" style="display:flex;align-items:center;">
       <div style="width:100%;">
@@ -345,7 +302,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
     <div id="clash-area"></div>
     <div style="padding:12px 0 8px;">
       <div class="action-row">
-        <button class="action-btn action-clash" onclick="onClash()"><span class="action-icon" id="clash-icon"></span><span class="action-label">CLASHER</span></button>
+        <button class="action-btn action-clash" onclick="onClash()"><span class="action-icon"><img src="/logo-sm.png" style="height:24px;filter:brightness(0);"></span><span class="action-label">CLASHER</span></button>
         <button class="action-btn action-validate" onclick="onValidate()" id="btn-validate"><span class="action-icon"></span><span class="action-label" id="val-label">VALIDER (+1)</span></button>
       </div>
     </div>
@@ -355,11 +312,11 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
   <!-- ═══ CONFIRM ═══ -->
   <div class="screen" id="screen-confirm">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:8px;"><div id="confirm-logo-sm"></div><p class="logo-text">clash<span>up</span></p></div>
+      <img src="/logo-sm.png" alt="ClashUp" class="logo-img-sm">
       <p class="cert-id" id="confirm-cert"></p>
     </div>
     <div class="confirm-zone">
-      <div class="confirm-logo" id="confirm-logo-big"></div>
+      <img src="/logo-lg.png" alt="ClashUp" class="logo-img-lg">
       <h2 class="confirm-title">PUNCHLINE ACTIVÉE</h2>
       <p class="confirm-sub">Ton dos parle pour toi</p>
     </div>
@@ -378,7 +335,7 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
     </div>
     <div class="px" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;">
       <div style="display:flex;gap:8px;"><button class="chip-f active" onclick="setF('tout',this)">[ TOUT ]</button><button class="chip-f" onclick="setF('trend',this)">[ TRENDING ]</button></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span id="coins" style="font-size:13px;font-weight:800;color:var(--orange);">475</span><span style="font-size:14px;"></span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span id="coins" style="font-size:13px;font-weight:800;color:var(--orange);">475</span></div>
     </div>
     <div class="scroll px" style="padding-bottom:8px;display:flex;flex-direction:column;gap:8px;" id="pl-list"></div>
     <div class="px" style="padding:12px 20px 20px;"><button class="btn btn-1" id="btn-charge" onclick="chargePatch()" disabled>CHARGER MON PATCH</button></div>
@@ -391,11 +348,6 @@ html,body{height:100%;width:100%;background:var(--black);color:var(--text-1);fon
 
 <script>
 let token=null,currentUser=null,patch=null,selIdx=null,customTxt='',localVals=0,clashOpen=false,clashDone=false,punchCatalog=[];
-
-function logoSVG(s,c,glow){
-  const f=glow?` style="filter:drop-shadow(0 0 6px ${c}44)"`:'';
-  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100" fill="none"${f}><path d="M48 15C30 15 15 28 15 44c0 10 5.5 18.5 14 24l-4 14 12-8c3.5 1.2 7.2 1.8 11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M52 15c18 0 33 13 33 29 0 10-5.5 18.5-14 24l4 14-12-8c-3.5 1.2-7.2 1.8-11 1.8" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M55 22L43 48h14L45 78" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
-}
 
 function authHeaders(){const h={'Content-Type':'application/json'};if(token)h['Authorization']=`Bearer ${token}`;return h}
 
@@ -437,10 +389,9 @@ async function loadMyPatch(){
   currentUser=me.user;patch=me.patch;punchCatalog=await api.catalog();renderPatch();showScreen('patch');
 }
 
-// ═══ RENDER PATCH — T-shirt view (NO QR visible on home) ═══
+// ═══ RENDER PATCH ═══
 function renderPatch(){
   if(!patch) return;
-  document.getElementById('patch-logo').innerHTML=logoSVG(26,'#e75314',true);
   document.getElementById('patch-cert').textContent='CERTIFICATE_ID: '+patch.certificateId;
   document.getElementById('user-display').textContent='@'+currentUser.username;
 
@@ -454,47 +405,43 @@ function renderPatch(){
 
   // Activate button state
   const ba=document.getElementById('btn-activate');
-  if(patch.punchline){
-    ba.textContent='CHANGER MA PUNCHLINE';
-  } else {
-    ba.textContent='ACTIVER MON PATCH';
-  }
+  ba.textContent=patch.punchline?'CHANGER MA PUNCHLINE':'ACTIVER MON PATCH';
 }
 
-// ═══ SHARE — Generates the patch DA image (QR + punchline + stitch border) ═══
-// This is the ONLY place the QR code appears
+// ═══ SHARE — Generates the patch DA image with QR ═══
 async function sharePatchImage(){
   const scanUrl=patch?.scanUrl||`${location.origin}/scan/${patch?.id}`;
   const canvas=document.getElementById('share-canvas');
   const ctx=canvas.getContext('2d');
   const W=600,H=600;canvas.width=W;canvas.height=H;
 
-  // Full dark bg
   ctx.fillStyle='#111111';ctx.fillRect(0,0,W,H);
 
-  // Orange stitch border (dashed)
+  // Orange stitch border
   ctx.strokeStyle='#e75314';ctx.lineWidth=3;ctx.setLineDash([8,5]);
   roundRect(ctx,24,24,W-48,H-48,16);ctx.stroke();ctx.setLineDash([]);
 
-  // Inner dark
   ctx.fillStyle='#0a0a0a';roundRect(ctx,34,34,W-68,H-68,12);ctx.fill();
 
-  // Load QR
+  // Load real logo for share image
+  const logoImg=new Image();logoImg.crossOrigin='anonymous';
+  logoImg.src='/logo-clashup.png';
+
   const qrImg=new Image();qrImg.crossOrigin='anonymous';
-  qrImg.src=qrUrl(scanUrl,260);
+  qrImg.src=qrUrl(scanUrl,200);
 
-  qrImg.onload=function(){
-    const qS=260,qX=(W-qS)/2,qY=70;
+  let loaded=0;
+  function onBothLoaded(){
+    loaded++;if(loaded<2)return;
 
-    // White bg behind QR for readability
-    ctx.fillStyle='#ffffff';roundRect(ctx,qX-12,qY-12,qS+24,qS+24,8);ctx.fill();
+    // Logo at top
+    const lh=40,lw=logoImg.width*(lh/logoImg.height);
+    ctx.drawImage(logoImg,(W-lw)/2,45,lw,lh);
+
+    // QR
+    const qS=200,qX=(W-qS)/2,qY=100;
+    ctx.fillStyle='#ffffff';roundRect(ctx,qX-10,qY-10,qS+20,qS+20,8);ctx.fill();
     ctx.drawImage(qrImg,qX,qY,qS,qS);
-
-    // ClashUp logo overlay center
-    const ls=56,lx=(W-ls)/2,ly=qY+(qS-ls)/2;
-    ctx.fillStyle='#e75314';roundRect(ctx,lx,ly,ls,ls,10);ctx.fill();
-    ctx.fillStyle='#fff';ctx.font='bold 14px Inter,sans-serif';ctx.textAlign='center';
-    ctx.fillText('clash',W/2,ly+24);ctx.fillText('up',W/2,ly+40);
 
     // Punchline text
     const punchText=patch?.punchline||'ON A TOUT FAIT À L\'ENVERS';
@@ -502,7 +449,7 @@ async function sharePatchImage(){
     const words=punchText.toLowerCase().split(' ');let lines=[],line='';
     for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>W-120){lines.push(line);line=w}else line=t}
     if(line)lines.push(line);
-    const pY=qY+qS+50;
+    const pY=qY+qS+45;
     lines.forEach((l,i)=>ctx.fillText(l,W/2,pY+i*28));
 
     // LTD EDITION
@@ -510,7 +457,6 @@ async function sharePatchImage(){
     const num=patch?.number?.split('/')[0]?.trim()||'001';
     ctx.fillText('LTD EDITION : '+num,W/2,H-55);
 
-    // Share
     canvas.toBlob(async(blob)=>{
       if(!blob){toast('Erreur');return}
       const file=new File([blob],`clashup-${patch.id}.png`,{type:'image/png'});
@@ -520,7 +466,11 @@ async function sharePatchImage(){
         const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`clashup-${patch.id}.png`;a.click();toast('Image téléchargée !');
       }
     },'image/png');
-  };
+  }
+
+  logoImg.onload=onBothLoaded;
+  qrImg.onload=onBothLoaded;
+  logoImg.onerror=()=>{loaded++;onBothLoaded()};
   qrImg.onerror=()=>toast('Erreur QR');
 }
 
@@ -551,9 +501,7 @@ async function chargePatch(){
   const res=await api.punch(patch.id,text,cost);
   if(res?.success){
     patch.punchline=res.punchline;patch.clashCoins=res.clashCoins;closeSheet();
-    document.getElementById('confirm-logo-sm').innerHTML=logoSVG(26,'#e75314',true);
     document.getElementById('confirm-cert').textContent=patch.certificateId;
-    document.getElementById('confirm-logo-big').innerHTML=logoSVG(120,'#e75314',true);
     showScreen('confirm');if(navigator.vibrate)navigator.vibrate([50,30,50]);
   }
   btn.disabled=false;btn.textContent='CHARGER MON PATCH';
@@ -567,14 +515,12 @@ async function goScan(pId){
   const pid=pId||patch?.id;if(!pid)return;scanPatchId=pid;
   const p=await api.getPatch(pid);if(!p||p.error){toast('Patch introuvable');return}
   localVals=0;clashOpen=false;clashDone=false;
-  document.getElementById('scan-logo').innerHTML=logoSVG(36,'#e75314',true);
   document.getElementById('scan-detect').innerHTML=`DETECTED: ${p.edition}<br>OWNER: ${p.owner}`;
   document.getElementById('scan-text').textContent=p.punchline||'AUCUNE PUNCHLINE';
   document.getElementById('scan-vals').style.display=p.validations>0?'block':'none';
   document.getElementById('scan-val-n').textContent=p.validations;
   document.getElementById('val-label').textContent='VALIDER (+1)';
   document.getElementById('clash-area').innerHTML='';
-  document.getElementById('clash-icon').innerHTML=logoSVG(28,'#000',false);
   const card=document.getElementById('scan-card-anim');card.style.animation='none';
   requestAnimationFrame(()=>{card.style.animation='scaleIn 500ms cubic-bezier(0.34,1.56,0.64,1) forwards'});
   showScreen('scan');if(navigator.vibrate)navigator.vibrate(50);
@@ -598,8 +544,6 @@ async function onValidate(){localVals++;const res=await api.validate(scanPatchId
 
 // ═══ INIT ═══
 async function init(){
-  document.getElementById('login-logo').innerHTML=logoSVG(48,'#e75314',true);
-  document.getElementById('signup-logo').innerHTML=logoSVG(48,'#e75314',true);
   document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
   document.getElementById('signup-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()});
 
