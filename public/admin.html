@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClashUp Admin</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #e75314; --bg: #050505; --surface: #0d0d0d; --surface-2: #151515;
+      --border: rgba(255,255,255,0.06); --text-1: #f5f5f5; --text-2: rgba(255,255,255,0.5);
+      --text-3: rgba(255,255,255,0.25); --success: #34d399; --danger: #ef4444;
+    }
+    body { background: var(--bg); color: var(--text-1); font-family: 'Inter',sans-serif; min-height:100vh; }
+
+    /* Login */
+    .login-wrap { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+    .login-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px; max-width:380px; width:100%; text-align:center; }
+    .login-box h1 { font-size:22px; font-weight:900; margin-bottom:8px; }
+    .login-box h1 span { color:var(--orange); }
+    .login-box p { font-size:13px; color:var(--text-2); margin-bottom:24px; }
+
+    /* Dashboard */
+    .dash { display:none; max-width:900px; margin:0 auto; padding:20px; }
+    .dash.active { display:block; }
+    .header { display:flex; align-items:center; justify-content:space-between; padding:16px 0 24px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+    .header h1 { font-size:20px; font-weight:900; }
+    .header h1 span { color:var(--orange); }
+
+    /* Stats */
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+    .stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center; }
+    .stat-n { font-size:28px; font-weight:900; color:var(--orange); }
+    .stat-l { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; margin-top:4px; }
+
+    /* Sections */
+    .section { margin-bottom:32px; }
+    .section-title { font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-2); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+
+    /* Table */
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th { text-align:left; padding:10px 12px; font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); border-bottom:1px solid var(--border); font-weight:700; }
+    td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.03); vertical-align:middle; }
+    tr:hover td { background:rgba(231,83,20,0.03); }
+    .mono { font-family:'Courier New',monospace; font-size:11px; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; }
+    .badge-active { background:rgba(52,211,153,0.12); color:var(--success); }
+    .badge-inactive { background:rgba(255,255,255,0.05); color:var(--text-3); }
+    .badge-orange { background:rgba(231,83,20,0.1); color:var(--orange); }
+
+    /* Forms */
+    .input {
+      width:100%; padding:10px 14px; border-radius:8px; font-size:13px; font-weight:500;
+      background:var(--surface); border:1.5px solid var(--border); color:var(--text-1);
+      outline:none; font-family:inherit; transition:border-color 200ms;
+    }
+    .input:focus { border-color:var(--orange); }
+    .input::placeholder { color:var(--text-3); }
+
+    .btn {
+      padding:10px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;
+      border:none; font-family:inherit; transition:all 150ms; letter-spacing:0.04em;
+    }
+    .btn:active { transform:scale(0.97); }
+    .btn-1 { background:var(--orange); color:#000; }
+    .btn-1:hover { box-shadow:0 0 20px rgba(231,83,20,0.2); }
+    .btn-2 { background:var(--surface-2); color:var(--text-2); border:1px solid var(--border); }
+    .btn-sm { padding:6px 12px; font-size:11px; }
+    .btn-danger { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid rgba(239,68,68,0.2); }
+
+    .form-row { display:flex; gap:8px; margin-bottom:12px; }
+    .form-row .input { flex:1; }
+
+    /* Modal */
+    .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:50; display:none; align-items:center; justify-content:center; padding:20px; }
+    .modal-bg.open { display:flex; }
+    .modal { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:24px; max-width:440px; width:100%; }
+    .modal h3 { font-size:16px; font-weight:800; margin-bottom:16px; }
+
+    .error { color:var(--danger); font-size:12px; margin-top:8px; }
+    .logout-btn { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:12px; font-family:inherit; }
+    .logout-btn:hover { color:var(--text-1); }
+    @media(max-width:600px) { .stats { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-view">
+  <div class="login-box">
+    <h1>clash<span>up</span> admin</h1>
+    <p>Back-office POC Apparel</p>
+    <input class="input" type="password" id="admin-pass" placeholder="Mot de passe admin" style="margin-bottom:12px;">
+    <button class="btn btn-1" style="width:100%;" onclick="doLogin()">ENTRER</button>
+    <p class="error" id="login-err"></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dash-view">
+  <div class="header">
+    <h1>clash<span>up</span> admin</h1>
+    <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats"></div>
+
+  <!-- Users -->
+  <div class="section">
+    <div class="section-title">
+      <span>Utilisateurs & Patchs</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>User</th><th>Patch</th><th>Punchline</th><th>Scans</th><th>CC</th><th></th></tr></thead>
+        <tbody id="users-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Punchlines -->
+  <div class="section">
+    <div class="section-title">
+      <span>Catalogue Punchlines</span>
+      <button class="btn btn-1 btn-sm" onclick="openAdd()">+ AJOUTER</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Texte</th><th>Auteur</th><th>CC</th><th>Statut</th><th></th></tr></thead>
+        <tbody id="punch-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Demo Credentials -->
+  <div class="section" style="margin-top:40px;">
+    <div class="section-title"><span>Comptes de démo</span></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:12px;">
+      <table style="font-size:12px;">
+        <thead><tr><th>Pseudo</th><th>Mot de passe</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">max_la_menace</td><td class="mono">clash1</td></tr>
+          <tr><td class="mono">sarah_clash</td><td class="mono">clash2</td></tr>
+          <tr><td class="mono">leo_punch</td><td class="mono">clash3</td></tr>
+          <tr><td class="mono">nina_fire</td><td class="mono">clash4</td></tr>
+          <tr><td class="mono">alex_boom</td><td class="mono">clash5</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PUNCHLINE MODAL -->
+<div class="modal-bg" id="modal-add" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>Ajouter une punchline</h3>
+    <div class="form-row"><input class="input" id="add-text" placeholder="Texte de la punchline"></div>
+    <div class="form-row">
+      <input class="input" id="add-by" placeholder="@auteur (optionnel)" style="flex:1;">
+      <input class="input" id="add-cc" placeholder="CC (coût)" type="number" value="0" style="width:100px;">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn btn-2" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-1" onclick="addPunch()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PUNCHLINE MODAL -->
+<div class="modal-bg" id="modal-edit" onclick="if(event.target===this)closeEdit()">
+  <div class="modal">
+    <h3>Modifier la punchline</h3>
+    <input type="hidden" id="edit-id">
+    <div class="form-row"><input class="input" id="edit-text" placeholder="Texte"></div>
+    <div class="form-row">
+      <input class="input" id="edit-by" placeholder="@auteur" style="flex:1;">
+      <input class="input" id="edit-cc" placeholder="CC" type="number" style="width:100px;">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn btn-2" onclick="closeEdit()">Annuler</button>
+      <button class="btn btn-1" onclick="savePunch()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let adminToken = null;
+
+function headers() { return { 'Content-Type':'application/json', 'Authorization':`Admin ${adminToken}` }; }
+
+async function doLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  const res = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) }).then(r=>r.json());
+  if (res.success) { adminToken = res.token; document.getElementById('login-view').style.display='none'; document.getElementById('dash-view').classList.add('active'); loadDash(); }
+  else document.getElementById('login-err').textContent = res.error;
+}
+
+function doLogout() { adminToken = null; location.reload(); }
+
+async function loadDash() {
+  const d = await fetch('/api/admin/dashboard', { headers:headers() }).then(r=>r.json());
+
+  // Stats
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-n">${d.stats.totalUsers}</div><div class="stat-l">Utilisateurs</div></div>
+    <div class="stat"><div class="stat-n">${d.stats.activePatches}</div><div class="stat-l">Patchs actifs</div></div>
+    <div class="stat"><div class="stat-n">${d.stats.totalScans}</div><div class="stat-l">Scans total</div></div>`;
+
+  // Users
+  document.getElementById('users-body').innerHTML = d.users.map(u => `<tr>
+    <td><strong>${u.username}</strong><br><span style="font-size:10px;color:var(--text-3);">${u.email||'—'}</span></td>
+    <td><span class="mono badge-orange badge">${u.patchId}</span></td>
+    <td style="max-width:200px;">${u.punchline ? `<span style="font-size:12px;">"${u.punchline}"</span>` : '<span style="color:var(--text-3);font-size:11px;">—</span>'}</td>
+    <td>${u.totalScans}</td>
+    <td>${u.clashCoins}</td>
+    <td><button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">×</button></td>
+  </tr>`).join('');
+
+  // Punchlines
+  document.getElementById('punch-body').innerHTML = d.punchlines.map(p => `<tr>
+    <td style="font-size:12px;font-weight:600;max-width:250px;">${p.text}</td>
+    <td><span style="font-size:11px;color:var(--orange);">${p.by||'—'}</span></td>
+    <td>${p.cc} CC</td>
+    <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'actif':'inactif'}</span></td>
+    <td style="white-space:nowrap;">
+      <button class="btn btn-2 btn-sm" onclick="openEdit('${p.id}','${p.text.replace(/'/g,"\\'")}','${p.by||''}',${p.cc})">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="delPunch('${p.id}')">×</button>
+    </td>
+  </tr>`).join('');
+}
+
+function openAdd() { document.getElementById('modal-add').classList.add('open'); document.getElementById('add-text').focus(); }
+function closeModal() { document.getElementById('modal-add').classList.remove('open'); }
+
+async function addPunch() {
+  const text = document.getElementById('add-text').value;
+  const by = document.getElementById('add-by').value || null;
+  const cc = parseInt(document.getElementById('add-cc').value) || 0;
+  if (!text.trim()) return;
+  await fetch('/api/admin/punchlines', { method:'POST', headers:headers(), body:JSON.stringify({text,by,cc}) });
+  closeModal(); document.getElementById('add-text').value=''; loadDash();
+}
+
+function openEdit(id,text,by,cc) {
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-text').value=text;
+  document.getElementById('edit-by').value=by;
+  document.getElementById('edit-cc').value=cc;
+  document.getElementById('modal-edit').classList.add('open');
+}
+function closeEdit() { document.getElementById('modal-edit').classList.remove('open'); }
+
+async function savePunch() {
+  const id = document.getElementById('edit-id').value;
+  const text = document.getElementById('edit-text').value;
+  const by = document.getElementById('edit-by').value || null;
+  const cc = parseInt(document.getElementById('edit-cc').value) || 0;
+  await fetch(`/api/admin/punchlines/${id}`, { method:'PUT', headers:headers(), body:JSON.stringify({text,by,cc}) });
+  closeEdit(); loadDash();
+}
+
+async function delPunch(id) {
+  if (!confirm('Supprimer cette punchline ?')) return;
+  await fetch(`/api/admin/punchlines/${id}`, { method:'DELETE', headers:headers() });
+  loadDash();
+}
+
+async function delUser(id) {
+  if (!confirm('Supprimer cet utilisateur et son patch ?')) return;
+  await fetch(`/api/admin/users/${id}`, { method:'DELETE', headers:headers() });
+  loadDash();
+}
+
+// Enter key on login
+document.getElementById('admin-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>

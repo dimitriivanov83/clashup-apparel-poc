@@ -1,0 +1,14 @@
+{
+  "name": "clashup-apparel-poc",
+  "version": "1.0.0",
+  "description": "ClashUp Connected Apparel — POC Live avec QR dynamique",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}
