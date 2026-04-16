@@ -385,7 +385,12 @@ const api={
 
 function qrUrl(url,size){return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&color=e75314&bgcolor=000000&ecc=H&format=png`}
 
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(`screen-${id}`).classList.add('active')}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`screen-${id}`).classList.add('active');
+  // Push state so back button works without losing session
+  if(id==='patch'&&location.pathname!=='/') history.pushState({screen:id},'','/');
+}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 // ═══ AUTH ═══
@@ -416,7 +421,7 @@ function renderPatch(){
   document.getElementById('user-display').textContent='@'+currentUser.username;
 
   // Small patch label on the t-shirt — just text, no QR
-  document.getElementById('patch-label-mini').textContent=patch.punchline?patch.punchline.toLowerCase():'on a tout fait à l\'envers';
+  document.getElementById('patch-label-mini').textContent='on a tout fait à l\'envers';
   document.getElementById('patch-ed-mini').textContent=`LTD EDITION : ${patch.number.split('/')[0].trim()}`;
 
   // Certificate data overlays
@@ -478,14 +483,10 @@ async function sharePatchImage(){
     ctx.fillStyle='#ffffff';roundRect(ctx,qX-10,qY-10,qS+20,qS+20,8);ctx.fill();
     ctx.drawImage(qrImg,qX,qY,qS,qS);
 
-    // Punchline text
-    const punchText=patch?.punchline||'ON A TOUT FAIT À L\'ENVERS';
+    // Fixed tagline — always the same
+    const punchText='on a tout fait à l\'envers';
     ctx.fillStyle='#ffffff';ctx.font='bold 22px Inter,Helvetica Neue,sans-serif';ctx.textAlign='center';
-    const words=punchText.toLowerCase().split(' ');let lines=[],line='';
-    for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>W-120){lines.push(line);line=w}else line=t}
-    if(line)lines.push(line);
-    const pY=qY+qS+45;
-    lines.forEach((l,i)=>ctx.fillText(l,W/2,pY+i*28));
+    ctx.fillText(punchText,W/2,qY+qS+45);
 
     // LTD EDITION
     ctx.fillStyle='#e75314';ctx.font='bold 16px Courier New,monospace';
@@ -496,7 +497,7 @@ async function sharePatchImage(){
       if(!blob){toast('Erreur');return}
       const file=new File([blob],`clashup-${patch.id}.png`,{type:'image/png'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){
-        try{await navigator.share({title:'ClashUp Patch',text:`${patch?.punchline||'Scan mon patch !'} `,files:[file]})}catch(e){}
+        try{await navigator.share({title:'ClashUp Patch',text:'on a tout fait à l\'envers — scan mon patch !',files:[file]})}catch(e){}
       }else{
         const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`clashup-${patch.id}.png`;a.click();toast('Image téléchargée !');
       }
@@ -654,16 +655,33 @@ async function init(){
   document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
   document.getElementById('signup-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()});
 
-  const path=location.pathname;
-  if(path.startsWith('/scan/')){const pid=path.split('/scan/')[1];if(pid){goScan(pid);return}}
-
+  // Always restore session first
   const stored=localStorage.getItem('cu_token');
-  if(stored){token=stored;const me=await api.me();
-    if(me&&!me.error){currentUser=me.user;patch=me.patch;punchCatalog=await api.catalog();renderPatch();showScreen('patch');return}
-    localStorage.removeItem('cu_token');
+  if(stored){
+    token=stored;
+    const me=await api.me();
+    if(me&&!me.error){
+      currentUser=me.user;patch=me.patch;punchCatalog=await api.catalog();
+    } else {
+      token=null;localStorage.removeItem('cu_token');
+    }
   }
-  showScreen('login');
+
+  // Then handle route
+  const p=location.pathname;
+  if(p.startsWith('/scan/')){const pid=p.split('/scan/')[1];if(pid){goScan(pid);return}}
+
+  // Show patch screen if logged in, otherwise login
+  if(currentUser&&patch){renderPatch();showScreen('patch')}
+  else showScreen('login');
 }
+
+// Handle browser back/forward — stay connected
+window.addEventListener('popstate',()=>{
+  if(currentUser&&patch){renderPatch();showScreen('patch')}
+  else showScreen('login');
+});
+
 init();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.getRegistrations().then(regs=>{regs.forEach(r=>r.unregister())});

@@ -1,6 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// ClashUp Connected Apparel — POC Server V3
+// ClashUp Connected Apparel — POC Server V4
 // PostgreSQL persistence, voting, history, real-time sync
+// Robust connection handling for Render free tier
 // ══════════════════════════════════════════════════════════════
 
 const http = require('http');
@@ -14,12 +15,34 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASS = process.env.ADMIN_PASS || 'clashup2024';
 const DATABASE_URL = process.env.DATABASE_URL;
 
-// ── PostgreSQL Pool ──
+// ── PostgreSQL Pool — robust config for Render free tier ──
 const pool = new Pool({
   connectionString: DATABASE_URL,
-  ssl: DATABASE_URL?.includes('render.com') ? { rejectUnauthorized: false } : false,
-  max: 10,
+  ssl: DATABASE_URL ? { rejectUnauthorized: false } : false,
+  max: 5,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+  allowExitOnIdle: false,
 });
+
+// Handle pool errors gracefully (prevents crash on connection drop)
+pool.on('error', (err) => {
+  console.error('  ⚠️  Pool error (non-fatal):', err.message);
+});
+
+// Helper: query with automatic retry on connection errors
+async function dbQuery(text, params) {
+  try {
+    return await pool.query(text, params);
+  } catch (err) {
+    // Retry once on connection-related errors
+    if (err.code === 'ECONNRESET' || err.code === 'EPIPE' || err.code === '57P01' || err.code === '08006' || err.code === '08003' || err.message?.includes('Connection terminated')) {
+      console.log('  🔄 DB reconnecting...');
+      return await pool.query(text, params);
+    }
+    throw err;
+  }
+}
 
 // ── MIME types ──
 const MIME = {
@@ -229,7 +252,7 @@ function getToken(req) {
 async function getUser(req) {
   const token = getToken(req);
   if (!token) return null;
-  const { rows } = await pool.query(
+  const { rows } = await dbQuery(
     'SELECT u.* FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = $1', [token]
   );
   return rows[0] || null;
@@ -268,26 +291,26 @@ const server = http.createServer(async (req, res) => {
     const { username, email, password } = body;
     if (!username?.trim() || !password?.trim()) return sendJSON(res, { error: 'Username et mot de passe requis' }, 400);
 
-    const { rows: existing } = await pool.query('SELECT id FROM users WHERE username = $1', [username.trim().toLowerCase()]);
+    const { rows: existing } = await dbQuery('SELECT id FROM users WHERE username = $1', [username.trim().toLowerCase()]);
     if (existing.length > 0) return sendJSON(res, { error: 'Ce pseudo est déjà pris' }, 409);
 
     const userId = genId('user_');
     const patchId = genPatchId();
     const clean = username.trim().toUpperCase().replace(/[^A-Z0-9_]/g, '_');
-    const { rows: countRows } = await pool.query('SELECT COUNT(*) FROM users');
+    const { rows: countRows } = await dbQuery('SELECT COUNT(*) FROM users');
     const num = `${String(parseInt(countRows[0].count) + 1).padStart(3, '0')} / 100`;
 
-    await pool.query(
+    await dbQuery(
       'INSERT INTO users (id, username, email, password_hash, patch_id) VALUES ($1,$2,$3,$4,$5)',
       [userId, username.trim().toLowerCase(), (email || '').trim().toLowerCase(), hashPass(password), patchId]
     );
-    await pool.query(
+    await dbQuery(
       'INSERT INTO patches (id, certificate_id, number, owner) VALUES ($1,$2,$3,$4)',
       [patchId, `#${patchId.slice(2)}`, num, `@${clean}`]
     );
 
     const token = crypto.randomBytes(24).toString('hex');
-    await pool.query('INSERT INTO sessions (token, user_id) VALUES ($1,$2)', [token, userId]);
+    await dbQuery('INSERT INTO sessions (token, user_id) VALUES ($1,$2)', [token, userId]);
     return sendJSON(res, { success: true, token, user: { id: userId, username: username.trim().toLowerCase(), patchId } });
   }
 
@@ -297,19 +320,19 @@ const server = http.createServer(async (req, res) => {
     const { username, password } = body;
     if (!username?.trim() || !password) return sendJSON(res, { error: 'Username et mot de passe requis' }, 400);
 
-    const { rows } = await pool.query('SELECT * FROM users WHERE username = $1', [username.trim().toLowerCase()]);
+    const { rows } = await dbQuery('SELECT * FROM users WHERE username = $1', [username.trim().toLowerCase()]);
     const user = rows[0];
     if (!user || user.password_hash !== hashPass(password)) return sendJSON(res, { error: 'Identifiants incorrects' }, 401);
 
     const token = crypto.randomBytes(24).toString('hex');
-    await pool.query('INSERT INTO sessions (token, user_id) VALUES ($1,$2)', [token, user.id]);
+    await dbQuery('INSERT INTO sessions (token, user_id) VALUES ($1,$2)', [token, user.id]);
     return sendJSON(res, { success: true, token, user: { id: user.id, username: user.username, patchId: user.patch_id } });
   }
 
   // POST /api/auth/logout
   if (pathname === '/api/auth/logout' && method === 'POST') {
     const token = getToken(req);
-    if (token) await pool.query('DELETE FROM sessions WHERE token = $1', [token]);
+    if (token) await dbQuery('DELETE FROM sessions WHERE token = $1', [token]);
     return sendJSON(res, { success: true });
   }
 
@@ -318,16 +341,16 @@ const server = http.createServer(async (req, res) => {
     const user = await getUser(req);
     if (!user) return sendJSON(res, { error: 'Non connecté' }, 401);
 
-    const { rows: pRows } = await pool.query('SELECT * FROM patches WHERE id = $1', [user.patch_id]);
+    const { rows: pRows } = await dbQuery('SELECT * FROM patches WHERE id = $1', [user.patch_id]);
     const patch = pRows[0];
     if (!patch) return sendJSON(res, { error: 'Patch introuvable' }, 404);
 
     // Get validation count and clash count
-    const { rows: vRows } = await pool.query('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
-    const { rows: cRows } = await pool.query('SELECT * FROM clashes WHERE patch_id=$1 AND punchline=$2 ORDER BY created_at DESC LIMIT 50', [patch.id, patch.punchline]);
+    const { rows: vRows } = await dbQuery('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
+    const { rows: cRows } = await dbQuery('SELECT * FROM clashes WHERE patch_id=$1 AND punchline=$2 ORDER BY created_at DESC LIMIT 50', [patch.id, patch.punchline]);
 
     // Punchline history
-    const { rows: hRows } = await pool.query('SELECT punchline, activated_at FROM punchline_history WHERE patch_id=$1 ORDER BY activated_at DESC LIMIT 20', [patch.id]);
+    const { rows: hRows } = await dbQuery('SELECT punchline, activated_at FROM punchline_history WHERE patch_id=$1 ORDER BY activated_at DESC LIMIT 20', [patch.id]);
 
     return sendJSON(res, {
       user: { id: user.id, username: user.username, email: user.email, patchId: user.patch_id },
@@ -348,14 +371,14 @@ const server = http.createServer(async (req, res) => {
   // GET /api/patch/:id (public — scan)
   const patchGet = pathname.match(/^\/api\/patch\/([^/]+)$/);
   if (patchGet && method === 'GET') {
-    const { rows } = await pool.query('SELECT * FROM patches WHERE id = $1', [patchGet[1]]);
+    const { rows } = await dbQuery('SELECT * FROM patches WHERE id = $1', [patchGet[1]]);
     const patch = rows[0];
     if (!patch) return sendJSON(res, { error: 'Patch not found' }, 404);
 
-    await pool.query('UPDATE patches SET total_scans = total_scans + 1 WHERE id = $1', [patch.id]);
+    await dbQuery('UPDATE patches SET total_scans = total_scans + 1 WHERE id = $1', [patch.id]);
 
-    const { rows: vRows } = await pool.query('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
-    const { rows: cRows } = await pool.query('SELECT * FROM clashes WHERE patch_id=$1 AND punchline=$2 ORDER BY created_at DESC LIMIT 50', [patch.id, patch.punchline]);
+    const { rows: vRows } = await dbQuery('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
+    const { rows: cRows } = await dbQuery('SELECT * FROM clashes WHERE patch_id=$1 AND punchline=$2 ORDER BY created_at DESC LIMIT 50', [patch.id, patch.punchline]);
 
     return sendJSON(res, {
       id: patch.id, certificateId: patch.certificate_id, series: patch.series, number: patch.number,
@@ -372,7 +395,7 @@ const server = http.createServer(async (req, res) => {
   // POST /api/patch/:id/punchline (owner only)
   const punchPost = pathname.match(/^\/api\/patch\/([^/]+)\/punchline$/);
   if (punchPost && method === 'POST') {
-    const { rows } = await pool.query('SELECT * FROM patches WHERE id = $1', [punchPost[1]]);
+    const { rows } = await dbQuery('SELECT * FROM patches WHERE id = $1', [punchPost[1]]);
     const patch = rows[0];
     if (!patch) return sendJSON(res, { error: 'Patch not found' }, 404);
 
@@ -385,20 +408,17 @@ const server = http.createServer(async (req, res) => {
     const newPunchline = body.punchline.trim().toUpperCase();
     const cost = body.cost || 0;
 
-    // Save current punchline to history
+    // Save current punchline to history (only the old one, before replacing)
     if (patch.punchline) {
-      await pool.query('INSERT INTO punchline_history (patch_id, punchline) VALUES ($1,$2)', [patch.id, patch.punchline]);
+      await dbQuery('INSERT INTO punchline_history (patch_id, punchline) VALUES ($1,$2)', [patch.id, patch.punchline]);
     }
 
-    // Update patch
-    await pool.query('UPDATE patches SET punchline = $1 WHERE id = $2', [newPunchline, patch.id]);
+    // Update patch with new punchline
+    await dbQuery('UPDATE patches SET punchline = $1 WHERE id = $2', [newPunchline, patch.id]);
 
     // Deduct coins
     const newCoins = Math.max(0, user.clash_coins - cost);
-    await pool.query('UPDATE users SET clash_coins = $1 WHERE id = $2', [newCoins, user.id]);
-
-    // Record activation in history
-    await pool.query('INSERT INTO punchline_history (patch_id, punchline) VALUES ($1,$2)', [patch.id, newPunchline]);
+    await dbQuery('UPDATE users SET clash_coins = $1 WHERE id = $2', [newCoins, user.id]);
 
     return sendJSON(res, {
       success: true, punchline: newPunchline, clashCoins: newCoins,
@@ -409,7 +429,7 @@ const server = http.createServer(async (req, res) => {
   // POST /api/patch/:id/clash (public)
   const clashPost = pathname.match(/^\/api\/patch\/([^/]+)\/clash$/);
   if (clashPost && method === 'POST') {
-    const { rows } = await pool.query('SELECT * FROM patches WHERE id = $1', [clashPost[1]]);
+    const { rows } = await dbQuery('SELECT * FROM patches WHERE id = $1', [clashPost[1]]);
     const patch = rows[0];
     if (!patch) return sendJSON(res, { error: 'Patch not found' }, 404);
 
@@ -417,12 +437,12 @@ const server = http.createServer(async (req, res) => {
     const text = (body.text || '').toUpperCase();
     const author = body.author || 'Anon';
 
-    await pool.query(
+    await dbQuery(
       'INSERT INTO clashes (patch_id, punchline, text, author) VALUES ($1,$2,$3,$4)',
       [patch.id, patch.punchline, text, author]
     );
 
-    const { rows: cRows } = await pool.query(
+    const { rows: cRows } = await dbQuery(
       'SELECT * FROM clashes WHERE patch_id=$1 AND punchline=$2 ORDER BY created_at DESC LIMIT 50',
       [patch.id, patch.punchline]
     );
@@ -436,14 +456,14 @@ const server = http.createServer(async (req, res) => {
   // POST /api/patch/:id/validate (public — 1 vote per IP per punchline)
   const valPost = pathname.match(/^\/api\/patch\/([^/]+)\/validate$/);
   if (valPost && method === 'POST') {
-    const { rows } = await pool.query('SELECT * FROM patches WHERE id = $1', [valPost[1]]);
+    const { rows } = await dbQuery('SELECT * FROM patches WHERE id = $1', [valPost[1]]);
     const patch = rows[0];
     if (!patch) return sendJSON(res, { error: 'Patch not found' }, 404);
 
     const ip = getClientIP(req);
 
     try {
-      await pool.query(
+      await dbQuery(
         'INSERT INTO validations (patch_id, punchline, voter_ip) VALUES ($1,$2,$3)',
         [patch.id, patch.punchline, ip]
       );
@@ -453,7 +473,7 @@ const server = http.createServer(async (req, res) => {
       throw e;
     }
 
-    const { rows: vRows } = await pool.query('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
+    const { rows: vRows } = await dbQuery('SELECT COUNT(*) FROM validations WHERE patch_id=$1 AND punchline=$2', [patch.id, patch.punchline]);
     return sendJSON(res, { success: true, validations: parseInt(vRows[0].count) });
   }
 
@@ -461,7 +481,7 @@ const server = http.createServer(async (req, res) => {
 
   // GET /api/punchlines (with vote counts)
   if (pathname === '/api/punchlines' && method === 'GET') {
-    const { rows } = await pool.query(`
+    const { rows } = await dbQuery(`
       SELECT pc.*, COALESCE(v.votes, 0) as votes
       FROM punchline_catalog pc
       LEFT JOIN (SELECT catalog_id, COUNT(*) as votes FROM punchline_votes GROUP BY catalog_id) v
@@ -479,12 +499,12 @@ const server = http.createServer(async (req, res) => {
   if (votePost && method === 'POST') {
     const ip = getClientIP(req);
     try {
-      await pool.query('INSERT INTO punchline_votes (catalog_id, voter_ip) VALUES ($1,$2)', [votePost[1], ip]);
+      await dbQuery('INSERT INTO punchline_votes (catalog_id, voter_ip) VALUES ($1,$2)', [votePost[1], ip]);
     } catch (e) {
       if (e.code === '23505') return sendJSON(res, { error: 'Déjà voté', alreadyVoted: true }, 409);
       throw e;
     }
-    const { rows } = await pool.query('SELECT COUNT(*) FROM punchline_votes WHERE catalog_id=$1', [votePost[1]]);
+    const { rows } = await dbQuery('SELECT COUNT(*) FROM punchline_votes WHERE catalog_id=$1', [votePost[1]]);
     return sendJSON(res, { success: true, votes: parseInt(rows[0].count) });
   }
 
@@ -502,13 +522,13 @@ const server = http.createServer(async (req, res) => {
 
   // GET /api/admin/dashboard
   if (pathname === '/api/admin/dashboard' && method === 'GET') {
-    const { rows: allUsers } = await pool.query(`
+    const { rows: allUsers } = await dbQuery(`
       SELECT u.id, u.username, u.email, u.patch_id, u.clash_coins, u.created_at,
              p.punchline, p.total_scans
       FROM users u LEFT JOIN patches p ON u.patch_id = p.id ORDER BY u.created_at
     `);
 
-    const { rows: catalog } = await pool.query(`
+    const { rows: catalog } = await dbQuery(`
       SELECT pc.*, COALESCE(v.votes, 0) as votes
       FROM punchline_catalog pc
       LEFT JOIN (SELECT catalog_id, COUNT(*) as votes FROM punchline_votes GROUP BY catalog_id) v
@@ -517,12 +537,12 @@ const server = http.createServer(async (req, res) => {
     `);
 
     // Global stats
-    const { rows: clashCount } = await pool.query('SELECT COUNT(*) FROM clashes');
-    const { rows: valCount } = await pool.query('SELECT COUNT(*) FROM validations');
+    const { rows: clashCount } = await dbQuery('SELECT COUNT(*) FROM clashes');
+    const { rows: valCount } = await dbQuery('SELECT COUNT(*) FROM validations');
 
     // Recent activity (last 30 clashes and activations)
-    const { rows: recentClashes } = await pool.query('SELECT c.*, p.owner FROM clashes c JOIN patches p ON c.patch_id = p.id ORDER BY c.created_at DESC LIMIT 30');
-    const { rows: recentActivations } = await pool.query('SELECT ph.*, p.owner FROM punchline_history ph JOIN patches p ON ph.patch_id = p.id ORDER BY ph.activated_at DESC LIMIT 30');
+    const { rows: recentClashes } = await dbQuery('SELECT c.*, p.owner FROM clashes c JOIN patches p ON c.patch_id = p.id ORDER BY c.created_at DESC LIMIT 30');
+    const { rows: recentActivations } = await dbQuery('SELECT ph.*, p.owner FROM punchline_history ph JOIN patches p ON ph.patch_id = p.id ORDER BY ph.activated_at DESC LIMIT 30');
 
     return sendJSON(res, {
       users: allUsers.map(u => ({
@@ -549,7 +569,7 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     if (!body.text?.trim()) return sendJSON(res, { error: 'Texte requis' }, 400);
     const id = genId('p');
-    await pool.query(
+    await dbQuery(
       'INSERT INTO punchline_catalog (id, text, author, cc) VALUES ($1,$2,$3,$4)',
       [id, body.text.trim().toUpperCase(), body.by || null, body.cc || 0]
     );
@@ -568,26 +588,26 @@ const server = http.createServer(async (req, res) => {
     if (body.active !== undefined) { sets.push(`active = $${i++}`); vals.push(body.active); }
     if (sets.length === 0) return sendJSON(res, { error: 'Nothing to update' }, 400);
     vals.push(punchPut[1]);
-    await pool.query(`UPDATE punchline_catalog SET ${sets.join(',')} WHERE id = $${i}`, vals);
+    await dbQuery(`UPDATE punchline_catalog SET ${sets.join(',')} WHERE id = $${i}`, vals);
     return sendJSON(res, { success: true });
   }
 
   // DELETE /api/admin/punchlines/:id
   const punchDel = pathname.match(/^\/api\/admin\/punchlines\/([^/]+)$/);
   if (punchDel && method === 'DELETE') {
-    await pool.query('DELETE FROM punchline_catalog WHERE id = $1', [punchDel[1]]);
+    await dbQuery('DELETE FROM punchline_catalog WHERE id = $1', [punchDel[1]]);
     return sendJSON(res, { success: true });
   }
 
   // DELETE /api/admin/users/:id
   const userDel = pathname.match(/^\/api\/admin\/users\/([^/]+)$/);
   if (userDel && method === 'DELETE') {
-    const { rows } = await pool.query('SELECT patch_id FROM users WHERE id = $1', [userDel[1]]);
+    const { rows } = await dbQuery('SELECT patch_id FROM users WHERE id = $1', [userDel[1]]);
     if (rows[0]) {
-      await pool.query('DELETE FROM patches WHERE id = $1', [rows[0].patch_id]);
+      await dbQuery('DELETE FROM patches WHERE id = $1', [rows[0].patch_id]);
     }
-    await pool.query('DELETE FROM sessions WHERE user_id = $1', [userDel[1]]);
-    await pool.query('DELETE FROM users WHERE id = $1', [userDel[1]]);
+    await dbQuery('DELETE FROM sessions WHERE user_id = $1', [userDel[1]]);
+    await dbQuery('DELETE FROM users WHERE id = $1', [userDel[1]]);
     return sendJSON(res, { success: true });
   }
 
@@ -618,12 +638,37 @@ async function start() {
     console.error('  Example: DATABASE_URL=postgresql://user:pass@host:5432/dbname node server.js\n');
     process.exit(1);
   }
+
+  // Test connection
+  try {
+    await pool.query('SELECT 1');
+    console.log('  ✅ PostgreSQL connected');
+  } catch (err) {
+    console.error('  ❌ Cannot connect to PostgreSQL:', err.message);
+    process.exit(1);
+  }
+
   await initDB();
+
+  // Keepalive ping every 4 min (Render free tier drops idle connections)
+  setInterval(async () => {
+    try { await pool.query('SELECT 1'); }
+    catch (e) { console.log('  ⚠️  Keepalive failed:', e.message); }
+  }, 4 * 60 * 1000);
+
   server.listen(PORT, () => {
-    console.log(`\n  ⚡ ClashUp Apparel POC V3 — port ${PORT}`);
+    console.log(`\n  ⚡ ClashUp Apparel POC V4 — port ${PORT}`);
     console.log(`  🔗 http://localhost:${PORT}`);
     console.log(`  🔑 Admin: http://localhost:${PORT}/admin (pass: ${ADMIN_PASS})`);
-    console.log(`  🗄️  PostgreSQL connected\n`);
+    console.log(`  🗄️  PostgreSQL ready\n`);
   });
 }
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('  Shutting down...');
+  await pool.end();
+  process.exit(0);
+});
+
 start();
